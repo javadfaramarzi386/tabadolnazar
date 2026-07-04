@@ -1,68 +1,133 @@
 # forum/admin.py
 
-# سیستم مدیریت جنگو (Django Admin)
+# =====================================================
+# پنل مدیریت جنگو (Django Admin)
+# =====================================================
+
 from django.contrib import admin
 
-# وارد کردن مدل‌های اپلیکیشن forum
 from .models import Category, Post, Comment
 
 
-# ----------------------------------------
-# تنظیمات نمایش مدل Category در پنل ادمین
-# ----------------------------------------
+# =====================================================
+# مدیریت دسته‌بندی‌ها
+# =====================================================
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
     """
-    تنظیمات مربوط به نمایش دسته‌بندی‌ها در Django Admin
-
-    هدف:
-    - نمایش ساده و خوانا از دسته‌بندی‌ها
-    - کمک به مدیریت بهتر محتوا
+    تنظیمات نمایش دسته‌بندی‌ها در پنل مدیریت
     """
 
-    # ستون‌هایی که در لیست نمایش داده می‌شوند
-    list_display = ['name', 'slug']
+    # ستون‌های نمایش
+    list_display = (
+        "name",
+        "parent",
+        "display_order",
+        "is_active",
+        "slug",
+    )
+
+    # فیلترها
+    list_filter = (
+        "is_active",
+        "parent",
+    )
+
+    # جستجو
+    search_fields = (
+        "name",
+        "description",
+    )
+
+    # تولید خودکار slug
+    prepopulated_fields = {
+        "slug": ("name",)
+    }
+
+    # مرتب‌سازی
+    ordering = (
+        "display_order",
+        "name",
+    )
 
 
-# ----------------------------------------
-# تنظیمات نمایش مدل Post در پنل ادمین
-# ----------------------------------------
+# =====================================================
+# مدیریت پست‌ها
+# =====================================================
 @admin.register(Post)
 class PostAdmin(admin.ModelAdmin):
     """
-    مدیریت پست‌ها در پنل ادمین
-
-    امکانات:
-    - نمایش اطلاعات مهم هر پست
-    - فیلتر بر اساس وضعیت تایید و دسته‌بندی
-    - جستجو در عنوان و محتوا
+    تنظیمات مدیریت پست‌ها
     """
 
-    # ستون‌های قابل نمایش در لیست پست‌ها
-    list_display = ['title', 'author', 'category', 'created_at', 'is_approved']
+    # ستون‌های جدول
+    list_display = (
+        "title",
+        "author",
+        "category",
+        "created_at",
+        "is_approved",
+        "total_likes",
+        "total_comments",
+    )
 
-    # فیلترهای کناری (Sidebar filters)
-    list_filter = ['is_approved', 'category']
+    # فیلترها
+    list_filter = (
+        "category",
+        "is_approved",
+        "created_at",
+    )
 
-    # قابلیت جستجو در پنل ادمین
-    search_fields = ['title', 'content']
+    # جستجو
+    search_fields = (
+        "title",
+        "content",
+        "author__username",
+    )
+
+    # فقط خواندنی
+    readonly_fields = (
+        "created_at",
+        "updated_at",
+    )
+
+    # مرتب‌سازی
+    ordering = (
+        "-created_at",
+    )
 
 
-# ----------------------------------------
-# تنظیمات نمایش مدل Comment در پنل ادمین
-# ----------------------------------------
+# =====================================================
+# مدیریت نظرات
+# =====================================================
 @admin.register(Comment)
 class CommentAdmin(admin.ModelAdmin):
     """
-    مدیریت کامنت‌ها در پنل ادمین
-
-    هدف:
-    - مشاهده نظرات کاربران
-    - مدیریت وضعیت تایید کامنت‌ها
+    تنظیمات مدیریت نظرات
     """
 
-    # اطلاعاتی که در لیست کامنت‌ها نمایش داده می‌شود
-    list_display = ['post', 'author', 'created_at', 'is_approved']
+    list_display = (
+        "author",
+        "post",
+        "created_at",
+        "is_approved",
+    )
 
-    # فیلتر بر اساس وضعیت تایید کامنت
-    list_filter = ['is_approved']
+    list_filter = (
+        "is_approved",
+        "created_at",
+    )
+
+    search_fields = (
+        "content",
+        "author__username",
+        "post__title",
+    )
+
+    readonly_fields = (
+        "created_at",
+    )
+
+    ordering = (
+        "-created_at",
+    )

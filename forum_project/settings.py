@@ -1,3 +1,8 @@
+
+
+# SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-dzh0^t5i#)cvq^u-gb^1to@8bp+ygt8l(b1w^stti%(o&wded1')
+
+
 """
 Django settings for forum_project project.
 """
@@ -9,27 +14,28 @@ import dj_database_url
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 # ========================================
 # تنظیمات امنیتی و توسعه
 # ========================================
 
 SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-dzh0^t5i#)cvq^u-gb^1to@8bp+ygt8l(b1w^stti%(o&wded1')
 
-# در Render و Railway این مقدار از محیط خوانده می‌شود
-DEBUG = os.environ.get("DEBUG", "False") == "True"
+# اصلاح شد: خواندن خودکار از محیط یا قرار دادن روی False واقعی (بولین)
+# اگر در پلتفرم‌هایی مثل Render یا لیارا هستید، خودش متغیر محیطی را می‌خواند
+# DEBUG = os.getenv("DEBUG", "False") == "True"
 
-ALLOWED_HOSTS = [
-    'javadfaramarzi386.pythonanywhere.com',
-    '127.0.0.1',
-    'localhost'
-]
+# اگر می‌خواهید کاملاً اجباری False باشد، خط زیر را از کامنت خارج کنید:
 
+
+DEBUG = False
+
+ALLOWED_HOSTS = ['.railway.app', '127.0.0.1', 'localhost']
 
 # ========================================
 # اپلیکیشن‌ها
 # ========================================
 INSTALLED_APPS = [
+    'whitenoise.runserver_nostatic',  # باید اول باشد
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -37,21 +43,18 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    # اپ‌های پروژه
+    # اپ‌های پروژه شما
     'accounts',
     'forum',
-
-    # برای static files در production
-    'whitenoise.runserver_nostatic',
+    'django_extensions',
 ]
-
 
 # ========================================
 # Middleware
 # ========================================
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',   # ← مهم برای static
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -60,13 +63,8 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-
-# ========================================
-# دیگر تنظیمات پایه
-# ========================================
 ROOT_URLCONF = 'forum_project.urls'
 WSGI_APPLICATION = 'forum_project.wsgi.application'
-
 
 # ========================================
 # Templates
@@ -86,52 +84,23 @@ TEMPLATES = [
     },
 ]
 
-
 # ========================================
-# دیتابیس (PostgreSQL)
+# دیتابیس
 # ========================================
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+if os.getenv('DATABASE_URL'):
+    DATABASES = {
+        'default': dj_database_url.config(
+            conn_max_age=600,
+            conn_health_checks=True,
+        )
     }
-}
-# DATABASES = {
-#     'default': dj_database_url.config(
-#         default='postgres://postgres:Jzf13890422@localhost:5432/postgres',
-#         conn_max_age=600,
-#         conn_health_checks=True,
-#     )
-# }
-
-
-# ========================================
-# اعتبارسنجی رمز عبور
-# ========================================
-AUTH_PASSWORD_VALIDATORS = [
-    {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
-    {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
-    {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator'},
-    {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
-]
-
-
-# ========================================
-# تنظیمات بین‌المللی
-# ========================================
-LANGUAGE_CODE = 'fa-ir'
-TIME_ZONE = 'Asia/Tehran'
-USE_I18N = True
-USE_TZ = True
-
-
-# ========================================
-# احراز هویت
-# ========================================
-LOGIN_URL = 'accounts:login'
-LOGIN_REDIRECT_URL = '/'
-LOGOUT_REDIRECT_URL = '/'
-
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
 
 # ========================================
 # Static & Media Files
@@ -139,24 +108,28 @@ LOGOUT_REDIRECT_URL = '/'
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-# WhiteNoise
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-
-
 # ========================================
-# تنظیمات اضافی
+# بقیه تنظیمات
 # ========================================
+LANGUAGE_CODE = 'fa-ir'
+TIME_ZONE = 'Asia/Tehran'
+USE_I18N = True
+USE_TZ = True
+
+LOGIN_URL = 'accounts:login'
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
+
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# امنیت بیشتر در production
+# امنیت (در Railway)
 if not DEBUG:
-    SECURE_HSTS_SECONDS = 31536000
-    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
-    SECURE_HSTS_PRELOAD = True
-    SECURE_BROWSER_XSS_FILTER = True
-    SECURE_CONTENT_TYPE_NOSNIFF = True
-    X_FRAME_OPTIONS = 'DENY'
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    # SECURE_SSL_REDIRECT = True   # فعلاً کامنت بماند

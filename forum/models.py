@@ -1,177 +1,213 @@
 # forum/models.py
 
-# هسته اصلی مدل‌های پایگاه داده در جنگو
 from django.db import models
-
-# مدل پیش‌فرض کاربر در سیستم احراز هویت جنگو
+from django.utils.text import slugify
 from django.contrib.auth.models import User
 
-# ابزارهای زمانی جنگو (در این کد فعلاً استفاده نشده)
-from django.utils import timezone
 
-
-# ----------------------------------------
-# مدل دسته‌بندی (Category)
-# ----------------------------------------
 class Category(models.Model):
     """
-    این مدل برای دسته‌بندی پست‌های انجمن استفاده می‌شود.
-
-    هر پست می‌تواند متعلق به یک دسته‌بندی باشد.
+    دسته‌بندی موضوعات انجمن
     """
 
-    # نام دسته‌بندی (نمایشی برای کاربر)
-    name = models.CharField(max_length=100, verbose_name="نام دسته‌بندی")
+    name = models.CharField(
+        max_length=100,
+        unique=True,
+        verbose_name="نام دسته‌بندی"
+    )
 
-    # شناسه یکتا برای URLها (مثلاً /category/python)
-    # null=True و blank=True یعنی موقتاً اختیاری است
-    slug = models.SlugField(unique=True, null=True, blank=True)
+    slug = models.SlugField(
+        unique=True,
+        blank=True,
+        verbose_name="آدرس اینترنتی (Slug)"
+    )
 
-    # توضیحات بیشتر درباره دسته‌بندی
-    description = models.TextField(blank=True, verbose_name="توضیحات")
+    description = models.TextField(
+        blank=True,
+        verbose_name="توضیحات"
+    )
+
+    parent = models.ForeignKey(
+        "self",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="children",
+        verbose_name="دسته والد"
+    )
+
+    display_order = models.PositiveIntegerField(
+        default=0,
+        verbose_name="ترتیب نمایش"
+    )
+
+    is_active = models.BooleanField(
+        default=True,
+        verbose_name="فعال"
+    )
+
+    is_visible = models.BooleanField(
+        default=True,
+        verbose_name="نمایش داده شود"
+    )
+
+    icon = models.CharField(
+        max_length=100,
+        blank=True,
+        verbose_name="آیکون FontAwesome"
+    )
+
+    color = models.CharField(
+        max_length=20,
+        default="#0d6efd",
+        verbose_name="رنگ"
+    )
+
+    image = models.ImageField(
+        upload_to="category_images/",
+        blank=True,
+        null=True,
+        verbose_name="تصویر دسته"
+    )
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name, allow_unicode=True)
+        super().save(*args, **kwargs)
+
+    def get_post_count(self):
+        """تعداد پست‌های تأیید شده این دسته‌بندی"""
+        return self.posts.filter(is_approved=True).count()
+
+    def children_count(self):
+        """تعداد زیردسته‌ها"""
+        return self.children.count()
+
+    def has_children(self):
+        """آیا این دسته زیردسته دارد؟"""
+        return self.children.exists()
 
     def __str__(self):
-        """
-        نمایش شیء در پنل ادمین و محیط‌های مختلف
-        """
+        if self.parent:
+            return f"{self.parent.name} ← {self.name}"
         return self.name
 
     class Meta:
-        """
-        تنظیمات متا برای مدل Category
-        """
-
-        # نام‌های نمایشی در پنل ادمین
+        ordering = ["display_order", "name"]
         verbose_name = "دسته‌بندی"
         verbose_name_plural = "دسته‌بندی‌ها"
 
 
-# ----------------------------------------
-# مدل پست (Post)
-# ----------------------------------------
 class Post(models.Model):
-    """
-    این مدل نماینده یک موضوع یا پست در فروم است.
-
-    ویژگی‌ها:
-    - عنوان و متن پست
-    - نویسنده
-    - دسته‌بندی
-    - وضعیت تأیید
-    - سیستم لایک
-    - زمان ایجاد و ویرایش
-    """
-
-    # عنوان پست
     title = models.CharField(max_length=200, verbose_name="عنوان موضوع")
+    content = models.TextField(verbose_name="متن موضوع")
 
-    # محتوای اصلی پست
-    content = models.TextField(verbose_name="متن پست")
-
-    # نویسنده پست (ارتباط با User)
     author = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-        related_name='posts'
+        related_name="posts",
+        verbose_name="نویسنده"
     )
 
-    # دسته‌بندی پست (در صورت حذف دسته‌بندی، مقدار NULL می‌شود)
     category = models.ForeignKey(
         Category,
         on_delete=models.SET_NULL,
         null=True,
-        related_name='posts'
+        blank=True,
+        related_name="posts",
+        verbose_name="دسته‌بندی"
     )
 
-    # زمان ایجاد پست (خودکار)
-    created_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="تاریخ ایجاد")
+    updated_at = models.DateTimeField(auto_now=True, verbose_name="آخرین ویرایش")
 
-    # زمان آخرین ویرایش پست (خودکار)
-    updated_at = models.DateTimeField(auto_now=True)
+    is_approved = models.BooleanField(default=True, verbose_name="تأیید شده")
+    is_pinned = models.BooleanField(default=False, verbose_name="سنجاق شده")
+    is_locked = models.BooleanField(default=False, verbose_name="قفل شده")
 
-    # وضعیت تأیید توسط مدیریت
-    is_approved = models.BooleanField(
-        default=True,
-        verbose_name="تایید شده توسط مدیریت"
-    )
+    views = models.PositiveIntegerField(default=0, verbose_name="تعداد بازدید")
 
-    # سیستم لایک (رابطه Many-to-Many بین کاربران و پست‌ها)
     likes = models.ManyToManyField(
         User,
-        related_name='liked_posts',
-        blank=True
+        blank=True,
+        related_name="liked_posts",
+        verbose_name="لایک‌ها"
     )
 
+    @property
+    def total_likes(self):
+        return self.likes.count()
+
+    @property
+    def total_comments(self):
+        return self.comments.filter(is_approved=True).count()
+
+    @property
+    def is_popular(self):
+        return self.total_likes >= 10
+
+    def increase_views(self):
+        self.views += 1
+        self.save(update_fields=["views"])
+
     def __str__(self):
-        """
-        نمایش پست در پنل ادمین
-        """
         return self.title
 
     class Meta:
-        """
-        تنظیمات کلی مدل Post
-        """
-
-        # مرتب‌سازی پیش‌فرض: جدیدترین پست‌ها اول
-        ordering = ['-created_at']
-
-        # نام‌های نمایشی در پنل ادمین
-        verbose_name = "پست"
-        verbose_name_plural = "پست‌ها"
+        ordering = ["-is_pinned", "-created_at"]
+        verbose_name = "موضوع"
+        verbose_name_plural = "موضوعات"
 
 
-# ----------------------------------------
-# مدل کامنت (Comment)
-# ----------------------------------------
 class Comment(models.Model):
-    """
-    این مدل برای ذخیره نظرات کاربران زیر پست‌ها استفاده می‌شود.
-
-    هر کامنت:
-    - به یک پست مرتبط است
-    - توسط یک کاربر نوشته می‌شود
-    """
-
-    # پستی که کامنت زیر آن ثبت شده است
     post = models.ForeignKey(
         Post,
         on_delete=models.CASCADE,
-        related_name='comments'
+        related_name="comments",
+        verbose_name="موضوع"
     )
 
-    # نویسنده کامنت
     author = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-        related_name='comments'
+        related_name="comments",
+        verbose_name="نویسنده"
     )
 
-    # متن کامنت
     content = models.TextField(verbose_name="متن نظر")
 
-    # زمان ثبت کامنت
-    created_at = models.DateTimeField(auto_now_add=True)
+    parent = models.ForeignKey(
+        "self",
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name="replies",
+        verbose_name="پاسخ به"
+    )
 
-    # وضعیت تأیید کامنت (برای moderation)
-    is_approved = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="تاریخ ثبت")
+    updated_at = models.DateTimeField(auto_now=True, verbose_name="آخرین ویرایش")
+
+    is_approved = models.BooleanField(default=True, verbose_name="تأیید شده")
+    is_edited = models.BooleanField(default=False, verbose_name="ویرایش شده")
+
+    @property
+    def has_replies(self):
+        return self.replies.exists()
+
+    @property
+    def replies_count(self):
+        return self.replies.filter(is_approved=True).count()
+
+    def short_content(self):
+        if len(self.content) > 50:
+            return self.content[:50] + "..."
+        return self.content
 
     def __str__(self):
-        """
-        نمایش کامنت در پنل ادمین
-
-        نمایش کوتاه شده از متن پست برای خوانایی بهتر
-        """
-        return f"نظر {self.author} در {self.post.title[:30]}"
+        return f"{self.author.username} | {self.post.title[:30]}"
 
     class Meta:
-        """
-        تنظیمات مدل Comment
-        """
-
-        # نمایش کامنت‌ها از قدیمی به جدید (برای بحث‌ها منطقی‌تر است)
-        ordering = ['created_at']
-
-        # نام‌های نمایشی در پنل ادمین
+        ordering = ["created_at"]
         verbose_name = "نظر"
         verbose_name_plural = "نظرات"

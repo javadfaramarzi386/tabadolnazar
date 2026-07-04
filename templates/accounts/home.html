@@ -1,39 +1,69 @@
 {# templates/accounts/home.html #}
 
-{# استفاده از قالب پایه اصلی سایت (base layout) #}
+
 {% extends 'base.html' %}
 
-{# عنوان صفحه (نمایش در تب مرورگر) #}
-{% block title %}خانه{% endblock %}
+{% block title %}انجمن خانواده‌های کودکان با نیازهای ویژه{% endblock %}
 
-{# ----------------------------------------
-   محتوای اصلی صفحه خانه
----------------------------------------- #}
 {% block content %}
-
-<!-- ردیف اصلی صفحه با فاصله از بالا -->
 <div class="row mt-5">
-
-    <!-- تمام عرض صفحه و متن وسط‌چین -->
     <div class="col-12 text-center">
 
-        <!-- عنوان اصلی سایت -->
-        <h1 class="display-5 fw-bold text-primary">
-            خوش آمدید به فروم خانواده‌ها
+        <!-- عنوان اصلی با حس ایرانی و گرم -->
+        <h1 class="display-4 fw-bold text-primary mb-3">
+            خوش آمدید به <span class="text-dark">همراهان</span>
         </h1>
 
-        <!-- توضیح کوتاه درباره هدف سایت -->
-        <p class="lead mt-3">
-            مکانی امن برای تبادل تجربه، حمایت و اطلاعات والدین کودکان معلول
+        <p class="fs-4 text-muted mb-2">
+            جایی که والدین کودکان با نیازهای ویژه،
+            <strong class="text-dark">دیگر تنها نیستند</strong>
         </p>
 
-        <!-- دکمه ورود به بخش فروم -->
-        <a href="{% url 'forum:post_list' %}" class="btn btn-primary btn-lg mt-4">
-            رفتن به فروم
+        <p class="lead mb-5" style="max-width: 720px; margin: 0 auto; line-height: 1.7;">
+            دورهمی صمیمی و امن والدین ایرانی که تجربیات، امیدها،
+            چالش‌ها و پیروزی‌های زندگی با کودک خاص را با هم به اشتراک می‌گذارند.
+        </p>
+
+        <!-- دکمه اصلی -->
+        <a href="{% url 'forum:post_list' %}"
+           class="btn btn-primary btn-lg px-5 py-3 shadow mb-4">
+            <i class="fas fa-comments me-2"></i>
+            ورود به انجمن گفتگو
         </a>
 
+        <!-- ویژگی‌های کلیدی با حس ایرانی -->
+        <div class="row justify-content-center mt-5 g-4">
+            <div class="col-md-4 col-sm-6">
+                <div class="p-4 h-100">
+                    <div class="h3 mb-3">🤝</div>
+                    <h5 class="fw-bold">همدلی و حمایت</h5>
+                    <p class="text-muted small">به اشتراک گذاشتن داستان‌های واقعی و دریافت حمایت عاطفی از والدینی که مسیر مشابهی را طی کرده‌اند</p>
+                </div>
+            </div>
+            <div class="col-md-4 col-sm-6">
+                <div class="p-4 h-100">
+                    <div class="h3 mb-3">📖</div>
+                    <h5 class="fw-bold">تجربه و دانش</h5>
+                    <p class="text-muted small">اطلاعات کاربردی از درمان، آموزش، حقوق والدین و تجربیات روزمره زندگی با کودک با نیازهای ویژه</p>
+                </div>
+            </div>
+            <div class="col-md-4 col-sm-6">
+                <div class="p-4 h-100">
+                    <div class="h3 mb-3">🏠</div>
+                    <h5 class="fw-bold">فضای امن ایرانی</h5>
+                    <p class="text-muted small">با احترام به فرهنگ و ارزش‌های ایرانی، بدون قضاوت و با حفظ حریم خصوصی</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- نقل قول احساسی -->
+        <div class="mt-5 pt-5 border-top">
+            <p class="fst-italic text-muted" style="max-width: 600px; margin: 0 auto;">
+                «ما با هم قوی‌تریم. اینجا جایی است که درد را تقسیم می‌کنیم و امید را چند برابر.»
+            </p>
+            <small class="text-muted">— والدینی مثل شما</small>
+        </div>
+
     </div>
-
 </div>
-
 {% endblock %}

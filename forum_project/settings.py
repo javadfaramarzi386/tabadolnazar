@@ -46,7 +46,7 @@ INSTALLED_APPS = [
     # اپ‌های پروژه شما
     'accounts',
     'forum',
-    'django_extensions',
+    # 'django_extensions',
 ]
 
 # ========================================

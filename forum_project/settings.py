@@ -27,7 +27,7 @@ SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-dzh0^t5i#)cvq^u-gb^1to@8bp
 # اگر می‌خواهید کاملاً اجباری False باشد، خط زیر را از کامنت خارج کنید:
 
 
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['.railway.app', '127.0.0.1', 'localhost']
 

@@ -1,41 +1,59 @@
-
+# forum_project/setting.py
 
 # SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-dzh0^t5i#)cvq^u-gb^1to@8bp+ygt8l(b1w^stti%(o&wded1')
+# "PASSWORD": "DonoB8iwu5iB",
 
-
+# =============================================================================
+# forum_project/settings.py
+# =============================================================================
 """
-Django settings for forum_project project.
+تنظیمات اصلی پروژه forum_project (سایت تبادل نظر)
+
+این فایل قلب تپنده پروژه است و تمام تنظیمات پایه، امنیتی، دیتابیس،
+فایل‌های استاتیک و رسانه و غیره را مدیریت می‌کند.
 """
 
 import os
 from pathlib import Path
-import dj_database_url
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
+# =============================================================================
+# مسیرهای پایه پروژه
+# =============================================================================
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# ========================================
-# تنظیمات امنیتی و توسعه
-# ========================================
+# =============================================================================
+# تنظیمات امنیتی
+# =============================================================================
 
-SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-dzh0^t5i#)cvq^u-gb^1to@8bp+ygt8l(b1w^stti%(o&wded1')
+# کلید مخفی پروژه (به هیچ وجه در گیت آپلود نشود)
+SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-dzh0^t5i#)cvq^u-gb^1to@8bp+ygt8l(b1w^stti%(o&wded1')   # در تولید حتماً از محیط استفاده کنید
 
-# اصلاح شد: خواندن خودکار از محیط یا قرار دادن روی False واقعی (بولین)
-# اگر در پلتفرم‌هایی مثل Render یا لیارا هستید، خودش متغیر محیطی را می‌خواند
-# DEBUG = os.getenv("DEBUG", "False") == "True"
-
-# اگر می‌خواهید کاملاً اجباری False باشد، خط زیر را از کامنت خارج کنید:
-
-
+# حالت دیباگ (در محیط تولید حتماً False باشد)
 DEBUG = False
 
-ALLOWED_HOSTS = ['.railway.app', '127.0.0.1', 'localhost']
+# هاست‌هایی که اجازه دسترسی دارند
+ALLOWED_HOSTS = [
+    '.chbkn.run',
+    'tabadolnazar.chbkn.run',
+    '127.0.0.1',
+    'localhost',
+]
 
-# ========================================
-# اپلیکیشن‌ها
-# ========================================
+# برای امنیت CSRF در دامنه‌های خارجی
+CSRF_TRUSTED_ORIGINS = [
+    "https://tabadolnazar.chbkn.run",
+]
+
+# =============================================================================
+# اپلیکیشن‌های نصب شده
+# =============================================================================
+
 INSTALLED_APPS = [
-    'whitenoise.runserver_nostatic',  # باید اول باشد
+    # اپ‌های شخص ثالث (باید قبل از اپ‌های جنگو باشند)
+    'whitenoise.runserver_nostatic',
+
+    # اپ‌های پیش‌فرض جنگو
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -46,15 +64,18 @@ INSTALLED_APPS = [
     # اپ‌های پروژه شما
     'accounts',
     'forum',
-    # 'django_extensions',
+
+    # اپ‌های اختیاری
+    # 'django_extensions',        # برای ابزارهای توسعه (shell_plus و غیره)
 ]
 
-# ========================================
-# Middleware
-# ========================================
+# =============================================================================
+# Middlewareها (میان‌افزارها)
+# =============================================================================
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',   # برای سرو استاتیک در تولید
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -66,13 +87,14 @@ MIDDLEWARE = [
 ROOT_URLCONF = 'forum_project.urls'
 WSGI_APPLICATION = 'forum_project.wsgi.application'
 
-# ========================================
-# Templates
-# ========================================
+# =============================================================================
+# قالب‌ها (Templates)
+# =============================================================================
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],   # قالب‌های اصلی پروژه
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -84,27 +106,28 @@ TEMPLATES = [
     },
 ]
 
-# ========================================
+# =============================================================================
 # دیتابیس
-# ========================================
-if os.getenv('DATABASE_URL'):
-    DATABASES = {
-        'default': dj_database_url.config(
-            conn_max_age=600,
-            conn_health_checks=True,
-        )
-    }
-else:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
-        }
-    }
+# =============================================================================
 
-# ========================================
-# Static & Media Files
-# ========================================
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.mysql",
+        "NAME": "tabadolnazar737_daniel",
+        "USER": "tabadolnazar737_daniel",
+        "PASSWORD": "DonoB8iwu5iB",
+        "HOST": "services.irn10.chabokan.net",
+        "PORT": "31237",
+        "OPTIONS": {
+            "charset": "utf8mb4",
+        },
+    }
+}
+
+# =============================================================================
+# فایل‌های استاتیک و رسانه
+# =============================================================================
+
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
@@ -113,23 +136,37 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-# ========================================
-# بقیه تنظیمات
-# ========================================
+# =============================================================================
+# تنظیمات بین‌المللی و زمانی
+# =============================================================================
+
 LANGUAGE_CODE = 'fa-ir'
 TIME_ZONE = 'Asia/Tehran'
 USE_I18N = True
 USE_TZ = True
 
+# =============================================================================
+# احراز هویت
+# =============================================================================
+
 LOGIN_URL = 'accounts:login'
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 
+# =============================================================================
+# فیلد پیش‌فرض
+# =============================================================================
+
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# امنیت (در Railway)
+# =============================================================================
+# تنظیمات امنیتی برای تولید (Production)
+# =============================================================================
+
 if not DEBUG:
-    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+    SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
-    # SECURE_SSL_REDIRECT = True   # فعلاً کامنت بماند
+    SECURE_BROWSER_XSS_FILTER = True
+    SECURE_CONTENT_TYPE_NOSNIFF = True
+    # SECURE_SSL_REDIRECT = True   # در صورت نیاز فعال کنید

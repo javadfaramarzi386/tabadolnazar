@@ -1,26 +1,49 @@
+# =============================================================================
+# forum_project/wsgi.py
+# =============================================================================
 """
-WSGI config for forum_project project.
+پیکربندی WSGI برای پروژه forum_project
 
-WSGI (Web Server Gateway Interface) نقطه ورود استاندارد جنگو برای اجرای پروژه
-در حالت synchronous است.
+WSGI (Web Server Gateway Interface) نقطه ورود استاندارد جنگو برای اجرای
+اپلیکیشن در حالت synchronous (سنتی) است.
 
-این فایل توسط وب‌سرورهایی مثل Gunicorn یا uWSGI استفاده می‌شود.
+این فایل توسط وب‌سرورهای production مثل:
+    - Gunicorn (پیشنهادی)
+    - uWSGI
+    - Apache + mod_wsgi
 
-It exposes the WSGI callable as a module-level variable named ``application``.
-
-برای اطلاعات بیشتر:
-https://docs.djangoproject.com/en/6.0/howto/deployment/wsgi/
+استفاده می‌شود.
 """
 
-# ماژول سیستم‌عامل برای مدیریت متغیرهای محیطی
 import os
-
-# تابع ساخت WSGI application از جنگو
 from django.core.wsgi import get_wsgi_application
 
-# تعیین مسیر تنظیمات پروژه
-# این خط مشخص می‌کند جنگو از کدام settings استفاده کند
+# =============================================================================
+# تنظیمات محیطی
+# =============================================================================
+
+# مشخص کردن فایل تنظیمات پروژه
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'forum_project.settings')
 
-# ساخت WSGI application برای استفاده توسط سرور
+# =============================================================================
+# ایجاد WSGI Application
+# =============================================================================
+
+# این متغیر توسط سرور WSGI فراخوانی می‌شود
 application = get_wsgi_application()
+
+# =============================================================================
+# نکات آموزشی
+# =============================================================================
+"""
+نکات مهم:
+
+1. WSGI در مقابل ASGI:
+   - WSGI: برای اجرای synchronous (مناسب اکثر پروژه‌ها)
+   - ASGI: برای اجرای asynchronous (مثل WebSocket)
+
+2. نحوه اجرای پروژه با Gunicorn (تولید):
+   gunicorn forum_project.wsgi:application --workers 4 --bind 0.0.0.0:8000
+
+3. معمولاً نیازی به تغییر این فایل نیست مگر در موارد خیلی پیشرفته.
+"""

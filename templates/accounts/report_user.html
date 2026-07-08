@@ -1,90 +1,87 @@
-{# templates/accounts/report_user.html #}
+{# ================================================
+   Template: report_user.html
+   Purpose: صفحه گزارش کاربر (Report User)
+   Location: templates/accounts/report_user.html
+   ================================================ #}
 
 {# استفاده از layout اصلی پروژه برای یکپارچگی UI #}
 {% extends 'base.html' %}
 
-{# عنوان صفحه (در تب مرورگر نمایش داده می‌شود) #}
+{# عنوان صفحه (نمایش در تب مرورگر) #}
 {% block title %}گزارش کاربر{% endblock %}
 
-{# ----------------------------------------
+{# ================================================
    محتوای اصلی صفحه گزارش کاربر
----------------------------------------- #}
+   ================================================ #}
 {% block content %}
 
-<!-- مرکز کردن فرم در صفحه -->
-<div class="row justify-content-center mt-5">
+    <!-- مرکز کردن فرم در صفحه -->
+    <div class="row justify-content-center mt-5">
 
-    <!-- تعیین عرض مناسب برای فرم -->
-    <div class="col-lg-6">
+        <!-- تعیین عرض مناسب برای فرم در اندازه‌های مختلف صفحه -->
+        <div class="col-lg-6">
 
-        <!-- کارت اصلی گزارش -->
-        <div class="card shadow">
+            <!-- کارت اصلی گزارش -->
+            <div class="card shadow">
 
-            <!-- هدر هشداردهنده (قرمز برای عملیات حساس) -->
-            <div class="card-header bg-danger text-white">
+                <!-- هدر کارت - با رنگ قرمز برای تأکید بر عملیات حساس -->
+                <div class="card-header bg-danger text-white">
+                    <h5>
+                        گزارش کاربر
+                        <strong>@{{ reported_user.username }}</strong>
+                    </h5>
+                </div>
 
-                <!-- نمایش نام کاربر گزارش‌شده -->
-                <h5>
-                    گزارش کاربر
-                    <strong>@{{ reported_user.username }}</strong>
-                </h5>
+                <!-- بدنه کارت -->
+                <div class="card-body">
 
-            </div>
+                    <!-- فرم ارسال گزارش -->
+                    <form method="post">
 
-            <!-- بدنه فرم -->
-            <div class="card-body">
+                        {# محافظت CSRF - ضروری برای امنیت فرم‌های POST در Django #}
+                        {% csrf_token %}
 
-                <!-- فرم ارسال گزارش -->
-                <form method="post">
+                        <!-- ----------------------------------------
+                             فیلد دلیل گزارش
+                             ---------------------------------------- -->
+                        <div class="mb-3">
+                            <label class="form-label">
+                                دلیل گزارش
+                                <span class="text-danger">*</span>
+                            </label>
+                            <textarea
+                                name="reason"
+                                class="form-control"
+                                rows="7"
+                                placeholder="توضیح کامل دلیل گزارش خود را اینجا بنویسید..."
+                                required>
+                            </textarea>
+                            <div class="form-text">
+                                لطفاً با جزئیات بنویسید تا بررسی دقیق‌تری انجام شود.
+                            </div>
+                        </div>
 
-                    {# محافظت CSRF برای جلوگیری از درخواست‌های جعلی #}
-                    {% csrf_token %}
+                        <!-- ----------------------------------------
+                             دکمه‌های عملیات
+                             ---------------------------------------- -->
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
 
-                    <!-- ----------------------------------------
-                         فیلد توضیح گزارش
-                    ---------------------------------------- -->
-                    <div class="mb-3">
+                            <!-- لینک بازگشت به پروفایل کاربر بدون ثبت گزارش -->
+                            <a href="{% url 'accounts:profile_detail' reported_user.username %}"
+                               class="btn btn-secondary">
+                                انصراف
+                            </a>
 
-                        <!-- برچسب فیلد -->
-                        <label class="form-label">
-                            دلیل گزارش (لطفاً با جزئیات بنویسید)
-                        </label>
+                            <!-- دکمه ارسال گزارش -->
+                            <button type="submit" class="btn btn-danger">
+                                ارسال گزارش
+                            </button>
+                        </div>
 
-                        <!-- فیلد متن گزارش -->
-                        <textarea name="reason"
-                                  class="form-control"
-                                  rows="7"
-                                  placeholder="توضیح کامل دلیل گزارش خود را اینجا بنویسید..."
-                                  required>
-                        </textarea>
-
-                    </div>
-
-                    <!-- ----------------------------------------
-                         دکمه‌های عملیات
-                    ---------------------------------------- -->
-                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-
-                        <!-- بازگشت بدون ثبت گزارش -->
-                        <a href="{% url 'accounts:profile_detail' reported_user.username %}"
-                           class="btn btn-secondary">
-
-                            انصراف
-                        </a>
-
-                        <!-- ارسال گزارش به سرور -->
-                        <button type="submit" class="btn btn-danger">
-                            ارسال گزارش
-                        </button>
-
-                    </div>
-
-                </form>
-
+                    </form>
+                </div>
             </div>
         </div>
-
     </div>
-</div>
 
 {% endblock %}

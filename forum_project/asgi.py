@@ -1,27 +1,53 @@
+# =============================================================================
+# forum_project/asgi.py
+# =============================================================================
 """
-ASGI config for forum_project project.
+پیکربندی ASGI برای پروژه forum_project
 
-ASGI (Asynchronous Server Gateway Interface) نقطه ورود پروژه جنگو برای
-اجرای اپلیکیشن در حالت asynchronous است.
+ASGI (Asynchronous Server Gateway Interface) نقطه ورود اصلی پروژه برای اجرای
+اپلیکیشن در حالت asynchronous است.
 
-این فایل توسط سرورهای ASGI (مثل Uvicorn یا Daphne) استفاده می‌شود.
+این فایل توسط سرورهای مدرن ASGI مانند:
+    - Uvicorn (پیشنهادی)
+    - Daphne
+    - Hypercorn
 
-It exposes the ASGI callable as a module-level variable named ``application``.
-
-برای اطلاعات بیشتر:
-https://docs.djangoproject.com/en/6.0/howto/deployment/asgi/
+استفاده می‌شود و امکان اجرای قابلیت‌های asynchronous (مانند WebSocket، Channels و غیره) را فراهم می‌کند.
 """
 
-# ماژول سیستم‌عامل برای مدیریت متغیرهای محیطی
 import os
-
-# تابع اصلی جنگو برای ساخت ASGI application
 from django.core.asgi import get_asgi_application
 
-# تنظیم متغیر محیطی پیش‌فرض برای معرفی فایل تنظیمات پروژه
-# این خط به جنگو می‌گوید از کدام settings استفاده کند
+# =============================================================================
+# تنظیمات محیطی
+# =============================================================================
+
+# مشخص کردن فایل تنظیمات پروژه (settings)
+# این خط به جنگو می‌گوید از کدام فایل settings استفاده کند
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'forum_project.settings')
 
-# ساخت و معرفی ASGI application
-# این متغیر توسط سرور ASGI استفاده می‌شود
+# =============================================================================
+# ایجاد ASGI Application
+# =============================================================================
+
+# ساخت شیء application که توسط سرور ASGI فراخوانی می‌شود
 application = get_asgi_application()
+
+# =============================================================================
+# نکات آموزشی و بهترین شیوه‌ها
+# =============================================================================
+"""
+نکات مهم:
+
+1. ASGI در مقابل WSGI:
+   - WSGI: برای اجرای synchronous (سنتی)
+   - ASGI: برای اجرای asynchronous (مدرن) — پشتیبانی از WebSocket، background tasks و غیره
+
+2. نحوه اجرا با Uvicorn:
+   uvicorn forum_project.asgi:application --reload
+
+3. در آینده اگر از Django Channels استفاده کنید:
+   - این فایل احتمالاً نیاز به ویرایش خواهد داشت تا ProtocolTypeRouter اضافه شود.
+
+4. معمولاً نیازی به تغییر این فایل نیست مگر در موارد پیشرفته.
+"""

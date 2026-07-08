@@ -1,13 +1,28 @@
+# =============================================================================
 # forum/models.py
+# =============================================================================
+"""
+مدل‌های اپلیکیشن forum
+
+این فایل شامل مدل‌های اصلی انجمن (فروم) است:
+    - Category: دسته‌بندی موضوعات
+    - Post: پست‌ها و موضوعات
+    - Comment: کامنت‌ها و پاسخ‌ها
+"""
 
 from django.db import models
 from django.utils.text import slugify
 from django.contrib.auth.models import User
 
 
+# =============================================================================
+# مدل دسته‌بندی (Category)
+# =============================================================================
+
 class Category(models.Model):
     """
-    دسته‌بندی موضوعات انجمن
+    مدل دسته‌بندی موضوعات انجمن.
+    پشتیبانی از دسته‌بندی‌های سلسله‌مراتبی (زیرمجموعه).
     """
 
     name = models.CharField(
@@ -27,6 +42,7 @@ class Category(models.Model):
         verbose_name="توضیحات"
     )
 
+    # رابطه سلسله‌مراتبی (دسته والد)
     parent = models.ForeignKey(
         "self",
         on_delete=models.SET_NULL,
@@ -67,14 +83,16 @@ class Category(models.Model):
         upload_to="category_images/",
         blank=True,
         null=True,
-        verbose_name="تصویر دسته"
+        verbose_name="تصویر دسته‌بندی"
     )
 
     def save(self, *args, **kwargs):
+        """تولید خودکار slug اگر وجود نداشته باشد"""
         if not self.slug:
             self.slug = slugify(self.name, allow_unicode=True)
         super().save(*args, **kwargs)
 
+    # متدهای کمکی
     def get_post_count(self):
         """تعداد پست‌های تأیید شده این دسته‌بندی"""
         return self.posts.filter(is_approved=True).count()
@@ -98,7 +116,15 @@ class Category(models.Model):
         verbose_name_plural = "دسته‌بندی‌ها"
 
 
+# =============================================================================
+# مدل پست (Post)
+# =============================================================================
+
 class Post(models.Model):
+    """
+    مدل پست / موضوع اصلی در انجمن.
+    """
+
     title = models.CharField(max_length=200, verbose_name="عنوان موضوع")
     content = models.TextField(verbose_name="متن موضوع")
 
@@ -121,12 +147,14 @@ class Post(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="تاریخ ایجاد")
     updated_at = models.DateTimeField(auto_now=True, verbose_name="آخرین ویرایش")
 
+    # وضعیت پست
     is_approved = models.BooleanField(default=True, verbose_name="تأیید شده")
     is_pinned = models.BooleanField(default=False, verbose_name="سنجاق شده")
     is_locked = models.BooleanField(default=False, verbose_name="قفل شده")
 
     views = models.PositiveIntegerField(default=0, verbose_name="تعداد بازدید")
 
+    # لایک‌ها
     likes = models.ManyToManyField(
         User,
         blank=True,
@@ -134,6 +162,7 @@ class Post(models.Model):
         verbose_name="لایک‌ها"
     )
 
+    # متدهای کمکی (Property)
     @property
     def total_likes(self):
         return self.likes.count()
@@ -147,6 +176,7 @@ class Post(models.Model):
         return self.total_likes >= 10
 
     def increase_views(self):
+        """افزایش تعداد بازدید"""
         self.views += 1
         self.save(update_fields=["views"])
 
@@ -159,7 +189,15 @@ class Post(models.Model):
         verbose_name_plural = "موضوعات"
 
 
+# =============================================================================
+# مدل کامنت (Comment)
+# =============================================================================
+
 class Comment(models.Model):
+    """
+    مدل کامنت و پاسخ‌های سلسله‌مراتبی.
+    """
+
     post = models.ForeignKey(
         Post,
         on_delete=models.CASCADE,
@@ -176,6 +214,7 @@ class Comment(models.Model):
 
     content = models.TextField(verbose_name="متن نظر")
 
+    # پاسخ به کامنت (برای ایجاد تاپیک)
     parent = models.ForeignKey(
         "self",
         on_delete=models.CASCADE,
@@ -191,6 +230,7 @@ class Comment(models.Model):
     is_approved = models.BooleanField(default=True, verbose_name="تأیید شده")
     is_edited = models.BooleanField(default=False, verbose_name="ویرایش شده")
 
+    # متدهای کمکی
     @property
     def has_replies(self):
         return self.replies.exists()
@@ -200,6 +240,7 @@ class Comment(models.Model):
         return self.replies.filter(is_approved=True).count()
 
     def short_content(self):
+        """خلاصه متن کامنت"""
         if len(self.content) > 50:
             return self.content[:50] + "..."
         return self.content

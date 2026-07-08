@@ -1,0 +1,140 @@
+/* ===========================
+   Modern Forum Theme
+=========================== */
+
+:root{
+    --primary:#1976d2;
+    --primary-dark:#0d47a1;
+    --secondary:#00bcd4;
+    --light:#f5f8fc;
+    --border:#e8eef5;
+    --text:#263238;
+    --muted:#78909c;
+}
+
+body{
+    background:#f4f7fb;
+    color:var(--text);
+    font-family:Vazirmatn,Tahoma,sans-serif;
+}
+
+/* Navbar */
+
+.navbar{
+    background:linear-gradient(90deg,#1976d2,#00bcd4)!important;
+    box-shadow:0 5px 20px rgba(0,0,0,.08);
+}
+
+.navbar-brand{
+    font-weight:bold;
+    font-size:28px;
+}
+
+.nav-link{
+    color:white!important;
+    transition:.25s;
+}
+
+.nav-link:hover{
+    opacity:.8;
+}
+
+/* Cards */
+
+.card{
+    border:none;
+    border-radius:18px;
+    overflow:hidden;
+    box-shadow:0 8px 25px rgba(0,0,0,.05);
+    transition:.25s;
+}
+
+.card:hover{
+    transform:translateY(-4px);
+    box-shadow:0 15px 35px rgba(0,0,0,.12);
+}
+
+/* Sidebar */
+
+.list-group-item{
+    border:none;
+    border-bottom:1px solid var(--border);
+}
+
+.list-group-item.active{
+    background:linear-gradient(90deg,#1976d2,#00bcd4);
+}
+
+/* Avatar */
+
+.avatar{
+
+    width:60px;
+    height:60px;
+    border-radius:50%;
+    object-fit:cover;
+    border:3px solid white;
+    box-shadow:0 5px 15px rgba(0,0,0,.15);
+
+}
+
+/* Buttons */
+
+.btn-primary{
+
+    background:linear-gradient(90deg,#1976d2,#00bcd4);
+    border:none;
+
+}
+
+.btn-success{
+
+    background:linear-gradient(90deg,#26c6da,#00acc1);
+    border:none;
+
+}
+
+.btn:hover{
+
+    transform:translateY(-2px);
+
+}
+
+/* Badges */
+
+.badge{
+
+    border-radius:30px;
+    padding:6px 12px;
+
+}
+
+/* Titles */
+
+h1,h2,h3,h4,h5{
+
+    font-weight:700;
+
+}
+
+/* Animation */
+
+.post-card{
+
+    animation:fadeIn .4s ease;
+
+}
+
+@keyframes fadeIn{
+
+from{
+opacity:0;
+transform:translateY(15px);
+}
+
+to{
+opacity:1;
+transform:translateY(0);
+}
+
+}

@@ -1,3 +1,5 @@
+# forum_project/urls.py
+
 """
 URL configuration for forum_project project.
 
@@ -48,6 +50,7 @@ urlpatterns = [
 
     # پنل مدیریت جنگو
     path('admin/', admin.site.urls),
+    path('accounts/', include('accounts.urls')),
 
     # مسیرهای مربوط به اپ accounts
     path('accounts/', include('accounts.urls')),

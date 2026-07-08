@@ -1,66 +1,51 @@
-{# templates/accounts/register.html #}
-
-{# استفاده از قالب پایه اصلی سایت (layout مشترک) #}
 {% extends 'base.html' %}
 
-{# عنوان صفحه (در تب مرورگر نمایش داده می‌شود) #}
 {% block title %}ثبت‌نام{% endblock %}
 
-{# ----------------------------------------
-   محتوای اصلی صفحه ثبت‌نام
----------------------------------------- #}
 {% block content %}
 
-<!-- مرکز کردن فرم در صفحه -->
+<!-- ============================================= -->
+<!-- صفحه ثبت‌نام کاربر جدید                       -->
+<!-- ============================================= -->
+
 <div class="row justify-content-center mt-5">
 
-    <!-- تعیین عرض فرم در صفحات مختلف -->
     <div class="col-lg-7 col-md-9">
 
-        <!-- کارت اصلی فرم ثبت‌نام -->
         <div class="card shadow">
 
-            <!-- هدر جذاب برای فرم ثبت‌نام -->
+            <!-- هدر کارت -->
             <div class="card-header bg-success text-white text-center py-4">
-
-                <!-- عنوان اصلی -->
-                <h4>ثبت‌نام در فروم خانواده‌ها</h4>
-
-                <!-- پیام خوش‌آمدگویی -->
+                <h4 class="mb-1">ثبت‌نام در فروم خانواده‌ها</h4>
                 <p class="mb-0">به جمع ما خوش آمدید ❤️</p>
-
             </div>
 
-            <!-- بدنه کارت -->
+            <!-- بدنه فرم -->
             <div class="card-body p-4">
 
-                <!-- فرم ثبت‌نام -->
-                <form method="post">
+                <form method="post" enctype="multipart/form-data">
 
-                    {# امنیت CSRF برای جلوگیری از حملات جعلی #}
+                    <!-- امنیت CSRF -->
                     {% csrf_token %}
 
-                    {# نمایش تمام فیلدهای فرم به صورت خودکار #}
+                    <!-- نمایش فیلدهای فرم -->
                     {{ form.as_p }}
 
-                    <!-- دکمه ارسال فرم -->
+                    <!-- دکمه ثبت‌نام -->
                     <button type="submit" class="btn btn-success btn-lg w-100 mt-4">
-                        ثبت‌نام
+                        <i class="fas fa-user-plus"></i> ثبت‌نام
                     </button>
 
                 </form>
 
-                <!-- لینک ورود برای کاربران موجود -->
+                <!-- لینک به صفحه ورود -->
                 <div class="text-center mt-4">
-
-                    <p>
+                    <p class="mb-0">
                         قبلاً عضو شده‌اید؟
-
-                        <a href="{% url 'accounts:login' %}" class="text-decoration-none">
-                            ورود به حساب
+                        <a href="{% url 'accounts:login' %}" class="text-decoration-none fw-bold">
+                            ورود به حساب کاربری
                         </a>
                     </p>
-
                 </div>
 
             </div>

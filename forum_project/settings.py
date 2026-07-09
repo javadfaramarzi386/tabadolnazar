@@ -1,7 +1,5 @@
 # forum_project/setting.py
 
-# SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-dzh0^t5i#)cvq^u-gb^1to@8bp+ygt8l(b1w^stti%(o&wded1')
-# "PASSWORD": "DonoB8iwu5iB",
 
 # =============================================================================
 # forum_project/settings.py
@@ -15,22 +13,24 @@
 
 import os
 from pathlib import Path
+from dotenv import load_dotenv
 
 # =============================================================================
 # مسیرهای پایه پروژه
 # =============================================================================
 
 BASE_DIR = Path(__file__).resolve().parent.parent
+load_dotenv(BASE_DIR / ".env")
 
 # =============================================================================
 # تنظیمات امنیتی
 # =============================================================================
 
 # کلید مخفی پروژه (به هیچ وجه در گیت آپلود نشود)
-SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-dzh0^t5i#)cvq^u-gb^1to@8bp+ygt8l(b1w^stti%(o&wded1')   # در تولید حتماً از محیط استفاده کنید
+SECRET_KEY = os.getenv("SECRET_KEY")
 
 # حالت دیباگ (در محیط تولید حتماً False باشد)
-DEBUG = False
+DEBUG = os.getenv("DEBUG", "True").lower() == "true"
 
 # هاست‌هایی که اجازه دسترسی دارند
 ALLOWED_HOSTS = [
@@ -110,32 +110,62 @@ TEMPLATES = [
 # دیتابیس
 # =============================================================================
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.mysql",
-        "NAME": "tabadolnazar737_daniel",
-        "USER": "tabadolnazar737_daniel",
-        "PASSWORD": "DonoB8iwu5iB",
-        "HOST": "services.irn10.chabokan.net",
-        "PORT": "31237",
-        "OPTIONS": {
-            "charset": "utf8mb4",
-        },
+DB_ENGINE = os.getenv("DB_ENGINE", "sqlite")
+
+if DB_ENGINE == "mysql":
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.mysql",
+            "NAME": os.getenv("DB_NAME"),
+            "USER": os.getenv("DB_USER"),
+            "PASSWORD": os.getenv("DB_PASSWORD"),
+            "HOST": os.getenv("DB_HOST"),
+            "PORT": os.getenv("DB_PORT"),
+            "OPTIONS": {
+                "charset": "utf8mb4",
+            },
+        }
     }
-}
+else:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+        }
+    }
+
+# DATABASES = {
+#     "default": {
+#         "ENGINE": "django.db.backends.mysql",
+#         "NAME": "tabadolnazar737_daniel",
+#         "USER": "tabadolnazar737_daniel",
+#         "PASSWORD": "DonoB8iwu5iB",
+#         "HOST": "services.irn10.chabokan.net",
+#         "PORT": "31237",
+#         "OPTIONS": {
+#             "charset": "utf8mb4",
+#         },
+#     }
+# }
 
 # =============================================================================
 # فایل‌های استاتیک و رسانه
 # =============================================================================
 
-STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+STATIC_URL = "/static/"
 
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+STATIC_ROOT = BASE_DIR / "staticfiles"
 
+STATICFILES_DIRS = []
+
+if (BASE_DIR / "static").exists():
+    STATICFILES_DIRS.append(BASE_DIR / "static")
+
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+
+MEDIA_URL = "/media/"
+
+MEDIA_ROOT = BASE_DIR / "media"
 # =============================================================================
 # تنظیمات بین‌المللی و زمانی
 # =============================================================================
@@ -164,9 +194,17 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # =============================================================================
 
 if not DEBUG:
+
     SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+
     SESSION_COOKIE_SECURE = True
+
     CSRF_COOKIE_SECURE = True
+
     SECURE_BROWSER_XSS_FILTER = True
+
     SECURE_CONTENT_TYPE_NOSNIFF = True
-    # SECURE_SSL_REDIRECT = True   # در صورت نیاز فعال کنید
+
+    SECURE_REFERRER_POLICY = "same-origin"
+    # SECURE_SSL_REDIRECT = True
+    # در صورت نیاز فعال کنید

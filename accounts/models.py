@@ -112,6 +112,15 @@ class Profile(models.Model):
         default=True,
         verbose_name="نمایش شهر"
     )
+    created_at = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name="تاریخ ایجاد"
+    )
+
+    updated_at = models.DateTimeField(
+        auto_now=True,
+        verbose_name="آخرین ویرایش"
+    )
 
     class Meta:
         verbose_name = "پروفایل کاربر"

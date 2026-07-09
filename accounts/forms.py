@@ -15,7 +15,7 @@ from django.core.exceptions import ValidationError
 from PIL import Image
 from io import BytesIO
 from django.core.files.uploadedfile import InMemoryUploadedFile
-
+from django.contrib.auth.password_validation import validate_password
 from .models import Profile
 
 
@@ -83,7 +83,7 @@ def compress_avatar(image):
 class UserRegistrationForm(forms.ModelForm):
     """
     فرم ثبت‌نام کاربر جدید.
-    شامل ایجاد کاربر در مدل User و پروفایل مربوطه در مدل Profile.
+    شامل ایجاد کاربر در مدل User و پروفایل مربوط در مدل Profile.
     """
 
     password = forms.CharField(
@@ -142,32 +142,90 @@ class UserRegistrationForm(forms.ModelForm):
             'username': 'فقط حروف انگلیسی، اعداد و @/./+/-/_ مجاز است.',
         }
 
+    def clean_username(self):
+        """
+            جلوگیری از ثبت ایمیل تکراری
+        """
+        username = self.cleaned_data.get('username', '').strip()
+
+        # جلوگیری از نام‌های رزرو شده
+        reserved = {
+            'admin',
+            'administrator',
+            'root',
+            'support',
+            'system',
+            'manager',
+            'moderator',
+            'superuser',
+        }
+
+        if username.lower() in reserved:
+            raise forms.ValidationError(
+                "انتخاب این نام کاربری مجاز نیست."
+            )
+
+        if User.objects.filter(username__iexact=username).exists():
+            raise forms.ValidationError(
+                "این نام کاربری قبلاً ثبت شده است."
+            )
+
+        return username
+
     def clean_email(self):
-        """جلوگیری از ثبت ایمیل تکراری"""
-        email = self.cleaned_data.get('email')
-        if email and User.objects.filter(email=email).exists():
-            raise forms.ValidationError("این ایمیل قبلاً ثبت شده است.")
+        """
+        جلوگیری از ثبت ایمیل تکراری
+        """
+        email = self.cleaned_data.get('email', '').strip().lower()
+
+        if email and User.objects.filter(email__iexact=email).exists():
+            raise forms.ValidationError(
+                "این ایمیل قبلاً ثبت شده است."
+            )
+
         return email
 
     def clean_avatar(self):
-        """فشرده‌سازی عکس در صورت آپلود"""
+        """
+        فشرده‌سازی عکس در صورت آپلود
+        """
         image = self.cleaned_data.get('avatar')
+
         if image:
             return compress_avatar(image)
+
         return image
 
+    def clean_password(self):
+        """
+        بررسی قدرت رمز عبور با استفاده از اعتبارسنجی‌های Django
+        """
+        password = self.cleaned_data.get('password')
+
+        validate_password(password)
+
+        return password
+
     def clean_password2(self):
-        """بررسی تطابق دو رمز عبور"""
-        cd = self.cleaned_data
-        if cd.get('password') != cd.get('password2'):
-            raise forms.ValidationError("رمزهای عبور مطابقت ندارند.")
-        return cd.get('password2')
+        """
+        بررسی تطابق دو رمز عبور
+        """
+        password = self.cleaned_data.get('password')
+        password2 = self.cleaned_data.get('password2')
+
+        if password != password2:
+            raise forms.ValidationError(
+                "رمزهای عبور مطابقت ندارند."
+            )
+
+        return password2
 
     def save(self, commit=True):
         """
         ذخیره کاربر + ایجاد پروفایل اتوماتیک
         """
         user = super().save(commit=False)
+        user.email = self.cleaned_data['email']
         user.set_password(self.cleaned_data['password'])
 
         if commit:

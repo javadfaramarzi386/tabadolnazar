@@ -60,7 +60,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
+    'axes',
     # اپ‌های پروژه شما
     'accounts',
     'forum',
@@ -80,6 +80,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'axes.middleware.AxesMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
@@ -182,6 +183,35 @@ USE_TZ = True
 LOGIN_URL = 'accounts:login'
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
+# =============================================================================
+# اعتبارسنجی رمز عبور
+# =============================================================================
+
+AUTH_PASSWORD_VALIDATORS = [
+    {
+        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
+    },
+    {
+        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
+        "OPTIONS": {
+            "min_length": 8,
+        },
+    },
+    {
+        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
+    },
+    {
+        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
+    },
+]
+# =============================================================================
+# Authentication Backends
+# =============================================================================
+
+AUTHENTICATION_BACKENDS = [
+    "axes.backends.AxesStandaloneBackend",
+    "django.contrib.auth.backends.ModelBackend",
+]
 
 # =============================================================================
 # فیلد پیش‌فرض
@@ -208,3 +238,21 @@ if not DEBUG:
     SECURE_REFERRER_POLICY = "same-origin"
     # SECURE_SSL_REDIRECT = True
     # در صورت نیاز فعال کنید
+# =============================================================================
+# تنظیمات امنیت ورود (django-axes)
+# =============================================================================
+
+# حداکثر تعداد تلاش ناموفق برای ورود
+AXES_FAILURE_LIMIT = 5
+
+# مدت زمان قفل شدن (۳۰ دقیقه)
+AXES_COOLOFF_TIME = 30
+
+# بعد از قفل شدن، کاربر به صفحه ورود برگردد
+AXES_LOCKOUT_TEMPLATE = 'registration/login.html'
+
+# شناسایی بر اساس IP و نام کاربری
+AXES_LOCKOUT_PARAMETERS = ["username", "ip_address"]
+
+# بعد از ورود موفق، شمارنده خطا صفر شود
+AXES_RESET_ON_SUCCESS = True

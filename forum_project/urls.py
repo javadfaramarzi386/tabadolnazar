@@ -50,7 +50,6 @@ urlpatterns = [
 
     # پنل مدیریت جنگو
     path('admin/', admin.site.urls),
-    path('accounts/', include('accounts.urls')),
 
     # مسیرهای مربوط به اپ accounts
     path('accounts/', include('accounts.urls')),

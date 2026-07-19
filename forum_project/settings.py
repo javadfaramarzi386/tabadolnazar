@@ -36,6 +36,8 @@ DEBUG = os.getenv("DEBUG", "True").lower() == "true"
 ALLOWED_HOSTS = [
     '.chbkn.run',
     'tabadolnazar.chbkn.run',
+    '.chbkn.dev',
+    'tabadolnazar.chbkn.dev',
     '127.0.0.1',
     'localhost',
 ]
@@ -135,19 +137,6 @@ else:
         }
     }
 
-# DATABASES = {
-#     "default": {
-#         "ENGINE": "django.db.backends.mysql",
-#         "NAME": "tabadolnazar737_daniel",
-#         "USER": "tabadolnazar737_daniel",
-#         "PASSWORD": "DonoB8iwu5iB",
-#         "HOST": "services.irn10.chabokan.net",
-#         "PORT": "31237",
-#         "OPTIONS": {
-#             "charset": "utf8mb4",
-#         },
-#     }
-# }
 
 # =============================================================================
 # فایل‌های استاتیک و رسانه

@@ -33,3 +33,7 @@ tree-f.txt
 # OS
 Thumbs.db
 .DS_Store
+# Database backups
+*.sql
+*.csv
+*.xml

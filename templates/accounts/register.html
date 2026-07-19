@@ -6,41 +6,25 @@
 
 {% block content %}
 
-<!-- ============================================= -->
-<!-- صفحه ثبت‌نام کاربر جدید                       -->
-<!-- ============================================= -->
-
 <div class="row justify-content-center mt-5">
-
     <div class="col-lg-7 col-md-9">
-
         <div class="card shadow">
-
             <!-- هدر کارت -->
             <div class="card-header bg-success text-white text-center py-4">
                 <h4 class="mb-1">ثبت‌نام در فروم خانواده‌ها</h4>
                 <p class="mb-0">به جمع ما خوش آمدید ❤️</p>
             </div>
 
-            <!-- بدنه فرم -->
             <div class="card-body p-4">
-
                 <form method="post" enctype="multipart/form-data">
-
-                    <!-- امنیت CSRF -->
                     {% csrf_token %}
-
-                    <!-- نمایش فیلدهای فرم -->
                     {{ form.as_p }}
 
-                    <!-- دکمه ثبت‌نام -->
                     <button type="submit" class="btn btn-success btn-lg w-100 mt-4">
                         <i class="fas fa-user-plus"></i> ثبت‌نام
                     </button>
-
                 </form>
 
-                <!-- لینک به صفحه ورود -->
                 <div class="text-center mt-4">
                     <p class="mb-0">
                         قبلاً عضو شده‌اید؟
@@ -49,10 +33,8 @@
                         </a>
                     </p>
                 </div>
-
             </div>
         </div>
-
     </div>
 </div>
 

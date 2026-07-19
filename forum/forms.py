@@ -1,110 +1,65 @@
-# =============================================================================
 # forum/forms.py
-# =============================================================================
-"""
-فرم‌های اپلیکیشن forum
-
-این فایل شامل فرم‌های ایجاد و ویرایش پست و ارسال کامنت است.
-تمام اعتبارسنجی‌ها و ظاهر فرم‌ها در این فایل مدیریت می‌شود.
-"""
 
 from django import forms
-from .models import Post, Comment
 
+from .models import Comment, Post
 
-# =============================================================================
-# فرم ایجاد و ویرایش پست
-# =============================================================================
 
 class PostForm(forms.ModelForm):
-    """
-    فرم ایجاد پست جدید و ویرایش پست موجود.
-
-    این فرم به مدل Post متصل است و فیلدهای اصلی پست را مدیریت می‌کند.
-    """
 
     class Meta:
         model = Post
+        fields = ["title", "content", "category"]
 
-        # فیلدهایی که در فرم نمایش داده می‌شوند
-        fields = ['title', 'content', 'category']
-
-        # تنظیمات ظاهر فرم (سازگار با Bootstrap)
         widgets = {
-            'title': forms.TextInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'عنوان موضوع را وارد کنید',
-                'autofocus': True,
-            }),
-            'content': forms.Textarea(attrs={
-                'class': 'form-control',
-                'rows': 10,
-                'placeholder': 'متن خود را اینجا بنویسید...',
-            }),
-            'category': forms.Select(attrs={
-                'class': 'form-select',
-            }),
+            "title": forms.TextInput(
+                attrs={
+                    "class": "form-control",
+                    "placeholder": "عنوان موضوع را وارد کنید",
+                    "autofocus": True,
+                }
+            ),
+            "content": forms.Textarea(
+                attrs={
+                    "class": "form-control",
+                    "rows": 10,
+                    "placeholder": "متن خود را اینجا بنویسید...",
+                }
+            ),
+            "category": forms.Select(
+                attrs={
+                    "class": "form-select",
+                }
+            ),
         }
 
-        # برچسب‌های فارسی برای فیلدها
         labels = {
-            'title': 'عنوان موضوع',
-            'content': 'متن پست',
-            'category': 'دسته‌بندی',
+            "title": "عنوان موضوع",
+            "content": "متن پست",
+            "category": "دسته‌بندی",
         }
 
-        # کمک متن (اختیاری)
         help_texts = {
-            'content': 'متن پست باید حداقل ۲۰ کاراکتر باشد.',
+            "content": "متن پست باید حداقل ۲۰ کاراکتر باشد.",
         }
 
-
-# =============================================================================
-# فرم ارسال کامنت
-# =============================================================================
 
 class CommentForm(forms.ModelForm):
-    """
-    فرم ساده ارسال کامنت زیر هر پست.
-
-    فقط فیلد محتوا نمایش داده می‌شود تا رابط کاربری ساده و سریع باشد.
-    """
 
     class Meta:
         model = Comment
-
-        # فقط فیلد محتوا
-        fields = ['content']
+        fields = ["content"]
 
         widgets = {
-            'content': forms.Textarea(attrs={
-                'class': 'form-control',
-                'rows': 4,
-                'placeholder': 'نظر خود را بنویسید...',
-            }),
+            "content": forms.Textarea(
+                attrs={
+                    "class": "form-control",
+                    "rows": 4,
+                    "placeholder": "نظر خود را بنویسید...",
+                }
+            ),
         }
 
         labels = {
-            'content': 'متن نظر',
+            "content": "متن نظر",
         }
-
-
-# =============================================================================
-# نکات آموزشی
-# =============================================================================
-"""
-نکات مهم:
-
-1. PostForm:
-   - برای ایجاد و ویرایش پست استفاده می‌شود.
-   - فیلد author به صورت خودکار در view تنظیم می‌شود (request.user).
-
-2. CommentForm:
-   - بسیار ساده طراحی شده تا ارسال کامنت سریع باشد.
-   - فیلد author و post در view به صورت دستی پر می‌شود.
-
-3. بهبودهای آینده:
-   - اضافه کردن فیلد tags یا image به PostForm
-   - اعتبارسنجی سفارشی (مثلاً حداقل طول محتوا)
-   - استفاده از Summernote یا CKEditor برای فیلد content
-"""

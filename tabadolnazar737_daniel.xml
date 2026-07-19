@@ -1,0 +1,1533 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+- phpMyAdmin XML Dump
+- version 5.2.2
+- https://www.phpmyadmin.net
+-
+- Host: services.irn10.chabokan.net:31237
+- Generation Time: Jul 14, 2026 at 08:11 AM
+- Server version: 8.0.29
+- PHP Version: 8.2.29
+-->
+
+<pma_xml_export version="1.0" xmlns:pma="https://www.phpmyadmin.net/some_doc_url/">
+    <!--
+    - Structure schemas
+    -->
+    <pma:structure_schemas>
+        <pma:database name="tabadolnazar737_daniel" collation="utf8mb4_0900_ai_ci" charset="utf8mb4">
+            <pma:table name="accounts_profile">
+                CREATE TABLE `accounts_profile` (
+                  `id` bigint NOT NULL AUTO_INCREMENT,
+                  `avatar` varchar(100) DEFAULT NULL,
+                  `nickname` varchar(50) NOT NULL,
+                  `bio` longtext NOT NULL,
+                  `child_age` int DEFAULT NULL,
+                  `condition_type` varchar(100) NOT NULL,
+                  `location` varchar(100) NOT NULL,
+                  `show_bio` tinyint(1) NOT NULL,
+                  `show_child_age` tinyint(1) NOT NULL,
+                  `show_condition_type` tinyint(1) NOT NULL,
+                  `show_location` tinyint(1) NOT NULL,
+                  `user_id` int NOT NULL,
+                  `created_at` datetime(6) NOT NULL,
+                  `updated_at` datetime(6) NOT NULL,
+                  PRIMARY KEY (`id`),
+                  UNIQUE KEY `user_id` (`user_id`),
+                  CONSTRAINT `accounts_profile_user_id_49a85d32_fk_auth_user_id` FOREIGN KEY (`user_id`) REFERENCES `auth_user` (`id`)
+                ) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+            </pma:table>
+            <pma:table name="accounts_report">
+                CREATE TABLE `accounts_report` (
+                  `id` bigint NOT NULL AUTO_INCREMENT,
+                  `reason` longtext NOT NULL,
+                  `created_at` datetime(6) NOT NULL,
+                  `reported_user_id` int NOT NULL,
+                  `reporter_id` int NOT NULL,
+                  PRIMARY KEY (`id`),
+                  KEY `accounts_report_reported_user_id_e4d773d9_fk_auth_user_id` (`reported_user_id`),
+                  KEY `accounts_report_reporter_id_3d4247eb_fk_auth_user_id` (`reporter_id`),
+                  CONSTRAINT `accounts_report_reported_user_id_e4d773d9_fk_auth_user_id` FOREIGN KEY (`reported_user_id`) REFERENCES `auth_user` (`id`),
+                  CONSTRAINT `accounts_report_reporter_id_3d4247eb_fk_auth_user_id` FOREIGN KEY (`reporter_id`) REFERENCES `auth_user` (`id`)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+            </pma:table>
+            <pma:table name="auth_group">
+                CREATE TABLE `auth_group` (
+                  `id` int NOT NULL AUTO_INCREMENT,
+                  `name` varchar(150) NOT NULL,
+                  PRIMARY KEY (`id`),
+                  UNIQUE KEY `name` (`name`)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+            </pma:table>
+            <pma:table name="auth_group_permissions">
+                CREATE TABLE `auth_group_permissions` (
+                  `id` bigint NOT NULL AUTO_INCREMENT,
+                  `group_id` int NOT NULL,
+                  `permission_id` int NOT NULL,
+                  PRIMARY KEY (`id`),
+                  UNIQUE KEY `auth_group_permissions_group_id_permission_id_0cd325b0_uniq` (`group_id`,`permission_id`),
+                  KEY `auth_group_permissio_permission_id_84c5c92e_fk_auth_perm` (`permission_id`),
+                  CONSTRAINT `auth_group_permissio_permission_id_84c5c92e_fk_auth_perm` FOREIGN KEY (`permission_id`) REFERENCES `auth_permission` (`id`),
+                  CONSTRAINT `auth_group_permissions_group_id_b120cbf9_fk_auth_group_id` FOREIGN KEY (`group_id`) REFERENCES `auth_group` (`id`)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+            </pma:table>
+            <pma:table name="auth_permission">
+                CREATE TABLE `auth_permission` (
+                  `id` int NOT NULL AUTO_INCREMENT,
+                  `name` varchar(255) NOT NULL,
+                  `content_type_id` int NOT NULL,
+                  `codename` varchar(100) NOT NULL,
+                  PRIMARY KEY (`id`),
+                  UNIQUE KEY `auth_permission_content_type_id_codename_01ab375a_uniq` (`content_type_id`,`codename`),
+                  CONSTRAINT `auth_permission_content_type_id_2f476e4b_fk_django_co` FOREIGN KEY (`content_type_id`) REFERENCES `django_content_type` (`id`)
+                ) ENGINE=InnoDB AUTO_INCREMENT=61 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+            </pma:table>
+            <pma:table name="auth_user">
+                CREATE TABLE `auth_user` (
+                  `id` int NOT NULL AUTO_INCREMENT,
+                  `password` varchar(128) NOT NULL,
+                  `last_login` datetime(6) DEFAULT NULL,
+                  `is_superuser` tinyint(1) NOT NULL,
+                  `username` varchar(150) NOT NULL,
+                  `first_name` varchar(150) NOT NULL,
+                  `last_name` varchar(150) NOT NULL,
+                  `email` varchar(254) NOT NULL,
+                  `is_staff` tinyint(1) NOT NULL,
+                  `is_active` tinyint(1) NOT NULL,
+                  `date_joined` datetime(6) NOT NULL,
+                  PRIMARY KEY (`id`),
+                  UNIQUE KEY `username` (`username`)
+                ) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+            </pma:table>
+            <pma:table name="auth_user_groups">
+                CREATE TABLE `auth_user_groups` (
+                  `id` bigint NOT NULL AUTO_INCREMENT,
+                  `user_id` int NOT NULL,
+                  `group_id` int NOT NULL,
+                  PRIMARY KEY (`id`),
+                  UNIQUE KEY `auth_user_groups_user_id_group_id_94350c0c_uniq` (`user_id`,`group_id`),
+                  KEY `auth_user_groups_group_id_97559544_fk_auth_group_id` (`group_id`),
+                  CONSTRAINT `auth_user_groups_group_id_97559544_fk_auth_group_id` FOREIGN KEY (`group_id`) REFERENCES `auth_group` (`id`),
+                  CONSTRAINT `auth_user_groups_user_id_6a12ed8b_fk_auth_user_id` FOREIGN KEY (`user_id`) REFERENCES `auth_user` (`id`)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+            </pma:table>
+            <pma:table name="auth_user_user_permissions">
+                CREATE TABLE `auth_user_user_permissions` (
+                  `id` bigint NOT NULL AUTO_INCREMENT,
+                  `user_id` int NOT NULL,
+                  `permission_id` int NOT NULL,
+                  PRIMARY KEY (`id`),
+                  UNIQUE KEY `auth_user_user_permissions_user_id_permission_id_14a6b632_uniq` (`user_id`,`permission_id`),
+                  KEY `auth_user_user_permi_permission_id_1fbb5f2c_fk_auth_perm` (`permission_id`),
+                  CONSTRAINT `auth_user_user_permi_permission_id_1fbb5f2c_fk_auth_perm` FOREIGN KEY (`permission_id`) REFERENCES `auth_permission` (`id`),
+                  CONSTRAINT `auth_user_user_permissions_user_id_a95ead1b_fk_auth_user_id` FOREIGN KEY (`user_id`) REFERENCES `auth_user` (`id`)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+            </pma:table>
+            <pma:table name="axes_accessattempt">
+                CREATE TABLE `axes_accessattempt` (
+                  `id` int NOT NULL AUTO_INCREMENT,
+                  `user_agent` varchar(255) NOT NULL,
+                  `ip_address` char(39) DEFAULT NULL,
+                  `username` varchar(255) DEFAULT NULL,
+                  `http_accept` varchar(1025) NOT NULL,
+                  `path_info` varchar(255) NOT NULL,
+                  `attempt_time` datetime(6) NOT NULL,
+                  `get_data` longtext NOT NULL,
+                  `post_data` longtext NOT NULL,
+                  `failures_since_start` int unsigned NOT NULL,
+                  PRIMARY KEY (`id`),
+                  UNIQUE KEY `axes_accessattempt_username_ip_address_user_agent_8ea22282_uniq` (`username`,`ip_address`,`user_agent`),
+                  KEY `axes_accessattempt_ip_address_10922d9c` (`ip_address`),
+                  KEY `axes_accessattempt_user_agent_ad89678b` (`user_agent`),
+                  KEY `axes_accessattempt_username_3f2d4ca0` (`username`),
+                  CONSTRAINT `axes_accessattempt_chk_1` CHECK ((`failures_since_start` &gt;= 0))
+                ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+            </pma:table>
+            <pma:table name="axes_accessattemptexpiration">
+                CREATE TABLE `axes_accessattemptexpiration` (
+                  `access_attempt_id` int NOT NULL,
+                  `expires_at` datetime(6) NOT NULL,
+                  PRIMARY KEY (`access_attempt_id`),
+                  CONSTRAINT `axes_accessattemptex_access_attempt_id_6b73a47a_fk_axes_acce` FOREIGN KEY (`access_attempt_id`) REFERENCES `axes_accessattempt` (`id`)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+            </pma:table>
+            <pma:table name="axes_accessfailurelog">
+                CREATE TABLE `axes_accessfailurelog` (
+                  `id` int NOT NULL AUTO_INCREMENT,
+                  `user_agent` varchar(255) NOT NULL,
+                  `ip_address` char(39) DEFAULT NULL,
+                  `username` varchar(255) DEFAULT NULL,
+                  `http_accept` varchar(1025) NOT NULL,
+                  `path_info` varchar(255) NOT NULL,
+                  `attempt_time` datetime(6) NOT NULL,
+                  `locked_out` tinyint(1) NOT NULL,
+                  PRIMARY KEY (`id`),
+                  KEY `axes_accessfailurelog_user_agent_ea145dda` (`user_agent`),
+                  KEY `axes_accessfailurelog_ip_address_2e9f5a7f` (`ip_address`),
+                  KEY `axes_accessfailurelog_username_a8b7e8a4` (`username`)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+            </pma:table>
+            <pma:table name="axes_accesslog">
+                CREATE TABLE `axes_accesslog` (
+                  `id` int NOT NULL AUTO_INCREMENT,
+                  `user_agent` varchar(255) NOT NULL,
+                  `ip_address` char(39) DEFAULT NULL,
+                  `username` varchar(255) DEFAULT NULL,
+                  `http_accept` varchar(1025) NOT NULL,
+                  `path_info` varchar(255) NOT NULL,
+                  `attempt_time` datetime(6) NOT NULL,
+                  `logout_time` datetime(6) DEFAULT NULL,
+                  `session_hash` varchar(64) NOT NULL,
+                  PRIMARY KEY (`id`),
+                  KEY `axes_accesslog_ip_address_86b417e5` (`ip_address`),
+                  KEY `axes_accesslog_user_agent_0e659004` (`user_agent`),
+                  KEY `axes_accesslog_username_df93064b` (`username`)
+                ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+            </pma:table>
+            <pma:table name="django_admin_log">
+                CREATE TABLE `django_admin_log` (
+                  `id` int NOT NULL AUTO_INCREMENT,
+                  `action_time` datetime(6) NOT NULL,
+                  `object_id` longtext,
+                  `object_repr` varchar(200) NOT NULL,
+                  `action_flag` smallint unsigned NOT NULL,
+                  `change_message` longtext NOT NULL,
+                  `content_type_id` int DEFAULT NULL,
+                  `user_id` int NOT NULL,
+                  PRIMARY KEY (`id`),
+                  KEY `django_admin_log_content_type_id_c4bce8eb_fk_django_co` (`content_type_id`),
+                  KEY `django_admin_log_user_id_c564eba6_fk_auth_user_id` (`user_id`),
+                  CONSTRAINT `django_admin_log_content_type_id_c4bce8eb_fk_django_co` FOREIGN KEY (`content_type_id`) REFERENCES `django_content_type` (`id`),
+                  CONSTRAINT `django_admin_log_user_id_c564eba6_fk_auth_user_id` FOREIGN KEY (`user_id`) REFERENCES `auth_user` (`id`),
+                  CONSTRAINT `django_admin_log_chk_1` CHECK ((`action_flag` &gt;= 0))
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+            </pma:table>
+            <pma:table name="django_content_type">
+                CREATE TABLE `django_content_type` (
+                  `id` int NOT NULL AUTO_INCREMENT,
+                  `app_label` varchar(100) NOT NULL,
+                  `model` varchar(100) NOT NULL,
+                  PRIMARY KEY (`id`),
+                  UNIQUE KEY `django_content_type_app_label_model_76bd3d3b_uniq` (`app_label`,`model`)
+                ) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+            </pma:table>
+            <pma:table name="django_migrations">
+                CREATE TABLE `django_migrations` (
+                  `id` bigint NOT NULL AUTO_INCREMENT,
+                  `app` varchar(255) NOT NULL,
+                  `name` varchar(255) NOT NULL,
+                  `applied` datetime(6) NOT NULL,
+                  PRIMARY KEY (`id`)
+                ) ENGINE=InnoDB AUTO_INCREMENT=36 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+            </pma:table>
+            <pma:table name="django_session">
+                CREATE TABLE `django_session` (
+                  `session_key` varchar(40) NOT NULL,
+                  `session_data` longtext NOT NULL,
+                  `expire_date` datetime(6) NOT NULL,
+                  PRIMARY KEY (`session_key`),
+                  KEY `django_session_expire_date_a5c62663` (`expire_date`)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+            </pma:table>
+            <pma:table name="forum_category">
+                CREATE TABLE `forum_category` (
+                  `id` bigint NOT NULL AUTO_INCREMENT,
+                  `name` varchar(100) NOT NULL,
+                  `slug` varchar(50) NOT NULL,
+                  `description` longtext NOT NULL,
+                  `display_order` int unsigned NOT NULL,
+                  `is_active` tinyint(1) NOT NULL,
+                  `parent_id` bigint DEFAULT NULL,
+                  `color` varchar(20) NOT NULL,
+                  `icon` varchar(100) NOT NULL,
+                  `image` varchar(100) DEFAULT NULL,
+                  `is_visible` tinyint(1) NOT NULL,
+                  PRIMARY KEY (`id`),
+                  UNIQUE KEY `slug` (`slug`),
+                  UNIQUE KEY `forum_category_name_9f308696_uniq` (`name`),
+                  KEY `forum_category_parent_id_c38ddcc9_fk_forum_category_id` (`parent_id`),
+                  CONSTRAINT `forum_category_parent_id_c38ddcc9_fk_forum_category_id` FOREIGN KEY (`parent_id`) REFERENCES `forum_category` (`id`),
+                  CONSTRAINT `forum_category_chk_1` CHECK ((`display_order` &gt;= 0))
+                ) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+            </pma:table>
+            <pma:table name="forum_comment">
+                CREATE TABLE `forum_comment` (
+                  `id` bigint NOT NULL AUTO_INCREMENT,
+                  `content` longtext NOT NULL,
+                  `created_at` datetime(6) NOT NULL,
+                  `is_approved` tinyint(1) NOT NULL,
+                  `author_id` int NOT NULL,
+                  `post_id` bigint NOT NULL,
+                  `is_edited` tinyint(1) NOT NULL,
+                  `parent_id` bigint DEFAULT NULL,
+                  `updated_at` datetime(6) NOT NULL,
+                  PRIMARY KEY (`id`),
+                  KEY `forum_comment_author_id_9e60eecd_fk_auth_user_id` (`author_id`),
+                  KEY `forum_comment_post_id_eb329692_fk_forum_post_id` (`post_id`),
+                  KEY `forum_comment_parent_id_4c29b530_fk_forum_comment_id` (`parent_id`),
+                  CONSTRAINT `forum_comment_author_id_9e60eecd_fk_auth_user_id` FOREIGN KEY (`author_id`) REFERENCES `auth_user` (`id`),
+                  CONSTRAINT `forum_comment_parent_id_4c29b530_fk_forum_comment_id` FOREIGN KEY (`parent_id`) REFERENCES `forum_comment` (`id`),
+                  CONSTRAINT `forum_comment_post_id_eb329692_fk_forum_post_id` FOREIGN KEY (`post_id`) REFERENCES `forum_post` (`id`)
+                ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+            </pma:table>
+            <pma:table name="forum_post">
+                CREATE TABLE `forum_post` (
+                  `id` bigint NOT NULL AUTO_INCREMENT,
+                  `title` varchar(200) NOT NULL,
+                  `content` longtext NOT NULL,
+                  `created_at` datetime(6) NOT NULL,
+                  `updated_at` datetime(6) NOT NULL,
+                  `is_approved` tinyint(1) NOT NULL,
+                  `author_id` int NOT NULL,
+                  `category_id` bigint DEFAULT NULL,
+                  `is_locked` tinyint(1) NOT NULL,
+                  `is_pinned` tinyint(1) NOT NULL,
+                  `views` int unsigned NOT NULL,
+                  PRIMARY KEY (`id`),
+                  KEY `forum_post_author_id_609b7963_fk_auth_user_id` (`author_id`),
+                  KEY `forum_post_category_id_202e3ede_fk_forum_category_id` (`category_id`),
+                  CONSTRAINT `forum_post_author_id_609b7963_fk_auth_user_id` FOREIGN KEY (`author_id`) REFERENCES `auth_user` (`id`),
+                  CONSTRAINT `forum_post_category_id_202e3ede_fk_forum_category_id` FOREIGN KEY (`category_id`) REFERENCES `forum_category` (`id`),
+                  CONSTRAINT `forum_post_chk_1` CHECK ((`views` &gt;= 0))
+                ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+            </pma:table>
+            <pma:table name="forum_post_likes">
+                CREATE TABLE `forum_post_likes` (
+                  `id` bigint NOT NULL AUTO_INCREMENT,
+                  `post_id` bigint NOT NULL,
+                  `user_id` int NOT NULL,
+                  PRIMARY KEY (`id`),
+                  UNIQUE KEY `forum_post_likes_post_id_user_id_fa33a7ea_uniq` (`post_id`,`user_id`),
+                  KEY `forum_post_likes_user_id_56514e1a_fk_auth_user_id` (`user_id`),
+                  CONSTRAINT `forum_post_likes_post_id_eeecd63b_fk_forum_post_id` FOREIGN KEY (`post_id`) REFERENCES `forum_post` (`id`),
+                  CONSTRAINT `forum_post_likes_user_id_56514e1a_fk_auth_user_id` FOREIGN KEY (`user_id`) REFERENCES `auth_user` (`id`)
+                ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+            </pma:table>
+        </pma:database>
+    </pma:structure_schemas>
+
+    <!--
+    - Database: 'tabadolnazar737_daniel'
+    -->
+    <database name="tabadolnazar737_daniel">
+        <!-- Table accounts_profile -->
+        <table name="accounts_profile">
+            <column name="id">1</column>
+            <column name="avatar">avatars/134.jpg</column>
+            <column name="nickname"></column>
+            <column name="bio">با سلام این سایت در حال تست می باشد</column>
+            <column name="child_age">16</column>
+            <column name="condition_type">خیلی شدید</column>
+            <column name="location">کرج</column>
+            <column name="show_bio">1</column>
+            <column name="show_child_age">1</column>
+            <column name="show_condition_type">1</column>
+            <column name="show_location">1</column>
+            <column name="user_id">1</column>
+            <column name="created_at">2026-07-09 06:20:22.851799</column>
+            <column name="updated_at">2026-07-09 06:49:57.267344</column>
+        </table>
+        <table name="accounts_profile">
+            <column name="id">2</column>
+            <column name="avatar">avatars/1000903089.jpg</column>
+            <column name="nickname"></column>
+            <column name="bio"></column>
+            <column name="child_age">NULL</column>
+            <column name="condition_type"></column>
+            <column name="location"></column>
+            <column name="show_bio">1</column>
+            <column name="show_child_age">1</column>
+            <column name="show_condition_type">1</column>
+            <column name="show_location">1</column>
+            <column name="user_id">2</column>
+            <column name="created_at">2026-07-09 06:20:22.851799</column>
+            <column name="updated_at">2026-07-09 06:20:22.947560</column>
+        </table>
+        <table name="accounts_profile">
+            <column name="id">3</column>
+            <column name="avatar"></column>
+            <column name="nickname"></column>
+            <column name="bio"></column>
+            <column name="child_age">NULL</column>
+            <column name="condition_type"></column>
+            <column name="location"></column>
+            <column name="show_bio">1</column>
+            <column name="show_child_age">1</column>
+            <column name="show_condition_type">1</column>
+            <column name="show_location">1</column>
+            <column name="user_id">3</column>
+            <column name="created_at">2026-07-09 06:20:22.851799</column>
+            <column name="updated_at">2026-07-11 07:33:33.872153</column>
+        </table>
+        <table name="accounts_profile">
+            <column name="id">4</column>
+            <column name="avatar"></column>
+            <column name="nickname"></column>
+            <column name="bio"></column>
+            <column name="child_age">NULL</column>
+            <column name="condition_type"></column>
+            <column name="location"></column>
+            <column name="show_bio">1</column>
+            <column name="show_child_age">1</column>
+            <column name="show_condition_type">1</column>
+            <column name="show_location">1</column>
+            <column name="user_id">4</column>
+            <column name="created_at">2026-07-09 06:20:22.851799</column>
+            <column name="updated_at">2026-07-09 06:20:22.947560</column>
+        </table>
+        <table name="accounts_profile">
+            <column name="id">5</column>
+            <column name="avatar">avatars/IMG_20250909_211129.jpg</column>
+            <column name="nickname"></column>
+            <column name="bio"></column>
+            <column name="child_age">NULL</column>
+            <column name="condition_type"></column>
+            <column name="location"></column>
+            <column name="show_bio">1</column>
+            <column name="show_child_age">1</column>
+            <column name="show_condition_type">1</column>
+            <column name="show_location">1</column>
+            <column name="user_id">5</column>
+            <column name="created_at">2026-07-09 08:13:32.148726</column>
+            <column name="updated_at">2026-07-09 08:14:00.272459</column>
+        </table>
+        <table name="accounts_profile">
+            <column name="id">6</column>
+            <column name="avatar"></column>
+            <column name="nickname"></column>
+            <column name="bio"></column>
+            <column name="child_age">NULL</column>
+            <column name="condition_type"></column>
+            <column name="location"></column>
+            <column name="show_bio">1</column>
+            <column name="show_child_age">1</column>
+            <column name="show_condition_type">1</column>
+            <column name="show_location">1</column>
+            <column name="user_id">6</column>
+            <column name="created_at">2026-07-09 08:49:23.781371</column>
+            <column name="updated_at">2026-07-09 08:49:23.881903</column>
+        </table>
+        <!-- Table accounts_report -->
+        <!-- Table auth_group -->
+        <!-- Table auth_group_permissions -->
+        <!-- Table auth_permission -->
+        <table name="auth_permission">
+            <column name="id">1</column>
+            <column name="name">Can add log entry</column>
+            <column name="content_type_id">1</column>
+            <column name="codename">add_logentry</column>
+        </table>
+        <table name="auth_permission">
+            <column name="id">2</column>
+            <column name="name">Can change log entry</column>
+            <column name="content_type_id">1</column>
+            <column name="codename">change_logentry</column>
+        </table>
+        <table name="auth_permission">
+            <column name="id">3</column>
+            <column name="name">Can delete log entry</column>
+            <column name="content_type_id">1</column>
+            <column name="codename">delete_logentry</column>
+        </table>
+        <table name="auth_permission">
+            <column name="id">4</column>
+            <column name="name">Can view log entry</column>
+            <column name="content_type_id">1</column>
+            <column name="codename">view_logentry</column>
+        </table>
+        <table name="auth_permission">
+            <column name="id">5</column>
+            <column name="name">Can add permission</column>
+            <column name="content_type_id">2</column>
+            <column name="codename">add_permission</column>
+        </table>
+        <table name="auth_permission">
+            <column name="id">6</column>
+            <column name="name">Can change permission</column>
+            <column name="content_type_id">2</column>
+            <column name="codename">change_permission</column>
+        </table>
+        <table name="auth_permission">
+            <column name="id">7</column>
+            <column name="name">Can delete permission</column>
+            <column name="content_type_id">2</column>
+            <column name="codename">delete_permission</column>
+        </table>
+        <table name="auth_permission">
+            <column name="id">8</column>
+            <column name="name">Can view permission</column>
+            <column name="content_type_id">2</column>
+            <column name="codename">view_permission</column>
+        </table>
+        <table name="auth_permission">
+            <column name="id">9</column>
+            <column name="name">Can add group</column>
+            <column name="content_type_id">3</column>
+            <column name="codename">add_group</column>
+        </table>
+        <table name="auth_permission">
+            <column name="id">10</column>
+            <column name="name">Can change group</column>
+            <column name="content_type_id">3</column>
+            <column name="codename">change_group</column>
+        </table>
+        <table name="auth_permission">
+            <column name="id">11</column>
+            <column name="name">Can delete group</column>
+            <column name="content_type_id">3</column>
+            <column name="codename">delete_group</column>
+        </table>
+        <table name="auth_permission">
+            <column name="id">12</column>
+            <column name="name">Can view group</column>
+            <column name="content_type_id">3</column>
+            <column name="codename">view_group</column>
+        </table>
+        <table name="auth_permission">
+            <column name="id">13</column>
+            <column name="name">Can add user</column>
+            <column name="content_type_id">4</column>
+            <column name="codename">add_user</column>
+        </table>
+        <table name="auth_permission">
+            <column name="id">14</column>
+            <column name="name">Can change user</column>
+            <column name="content_type_id">4</column>
+            <column name="codename">change_user</column>
+        </table>
+        <table name="auth_permission">
+            <column name="id">15</column>
+            <column name="name">Can delete user</column>
+            <column name="content_type_id">4</column>
+            <column name="codename">delete_user</column>
+        </table>
+        <table name="auth_permission">
+            <column name="id">16</column>
+            <column name="name">Can view user</column>
+            <column name="content_type_id">4</column>
+            <column name="codename">view_user</column>
+        </table>
+        <table name="auth_permission">
+            <column name="id">17</column>
+            <column name="name">Can add content type</column>
+            <column name="content_type_id">5</column>
+            <column name="codename">add_contenttype</column>
+        </table>
+        <table name="auth_permission">
+            <column name="id">18</column>
+            <column name="name">Can change content type</column>
+            <column name="content_type_id">5</column>
+            <column name="codename">change_contenttype</column>
+        </table>
+        <table name="auth_permission">
+            <column name="id">19</column>
+            <column name="name">Can delete content type</column>
+            <column name="content_type_id">5</column>
+            <column name="codename">delete_contenttype</column>
+        </table>
+        <table name="auth_permission">
+            <column name="id">20</column>
+            <column name="name">Can view content type</column>
+            <column name="content_type_id">5</column>
+            <column name="codename">view_contenttype</column>
+        </table>
+        <table name="auth_permission">
+            <column name="id">21</column>
+            <column name="name">Can add session</column>
+            <column name="content_type_id">6</column>
+            <column name="codename">add_session</column>
+        </table>
+        <table name="auth_permission">
+            <column name="id">22</column>
+            <column name="name">Can change session</column>
+            <column name="content_type_id">6</column>
+            <column name="codename">change_session</column>
+        </table>
+        <table name="auth_permission">
+            <column name="id">23</column>
+            <column name="name">Can delete session</column>
+            <column name="content_type_id">6</column>
+            <column name="codename">delete_session</column>
+        </table>
+        <table name="auth_permission">
+            <column name="id">24</column>
+            <column name="name">Can view session</column>
+            <column name="content_type_id">6</column>
+            <column name="codename">view_session</column>
+        </table>
+        <table name="auth_permission">
+            <column name="id">25</column>
+            <column name="name">Can add profile</column>
+            <column name="content_type_id">7</column>
+            <column name="codename">add_profile</column>
+        </table>
+        <table name="auth_permission">
+            <column name="id">26</column>
+            <column name="name">Can change profile</column>
+            <column name="content_type_id">7</column>
+            <column name="codename">change_profile</column>
+        </table>
+        <table name="auth_permission">
+            <column name="id">27</column>
+            <column name="name">Can delete profile</column>
+            <column name="content_type_id">7</column>
+            <column name="codename">delete_profile</column>
+        </table>
+        <table name="auth_permission">
+            <column name="id">28</column>
+            <column name="name">Can view profile</column>
+            <column name="content_type_id">7</column>
+            <column name="codename">view_profile</column>
+        </table>
+        <table name="auth_permission">
+            <column name="id">29</column>
+            <column name="name">Can add report</column>
+            <column name="content_type_id">8</column>
+            <column name="codename">add_report</column>
+        </table>
+        <table name="auth_permission">
+            <column name="id">30</column>
+            <column name="name">Can change report</column>
+            <column name="content_type_id">8</column>
+            <column name="codename">change_report</column>
+        </table>
+        <table name="auth_permission">
+            <column name="id">31</column>
+            <column name="name">Can delete report</column>
+            <column name="content_type_id">8</column>
+            <column name="codename">delete_report</column>
+        </table>
+        <table name="auth_permission">
+            <column name="id">32</column>
+            <column name="name">Can view report</column>
+            <column name="content_type_id">8</column>
+            <column name="codename">view_report</column>
+        </table>
+        <table name="auth_permission">
+            <column name="id">33</column>
+            <column name="name">Can add دسته‌بندی</column>
+            <column name="content_type_id">9</column>
+            <column name="codename">add_category</column>
+        </table>
+        <table name="auth_permission">
+            <column name="id">34</column>
+            <column name="name">Can change دسته‌بندی</column>
+            <column name="content_type_id">9</column>
+            <column name="codename">change_category</column>
+        </table>
+        <table name="auth_permission">
+            <column name="id">35</column>
+            <column name="name">Can delete دسته‌بندی</column>
+            <column name="content_type_id">9</column>
+            <column name="codename">delete_category</column>
+        </table>
+        <table name="auth_permission">
+            <column name="id">36</column>
+            <column name="name">Can view دسته‌بندی</column>
+            <column name="content_type_id">9</column>
+            <column name="codename">view_category</column>
+        </table>
+        <table name="auth_permission">
+            <column name="id">37</column>
+            <column name="name">Can add موضوع</column>
+            <column name="content_type_id">10</column>
+            <column name="codename">add_post</column>
+        </table>
+        <table name="auth_permission">
+            <column name="id">38</column>
+            <column name="name">Can change موضوع</column>
+            <column name="content_type_id">10</column>
+            <column name="codename">change_post</column>
+        </table>
+        <table name="auth_permission">
+            <column name="id">39</column>
+            <column name="name">Can delete موضوع</column>
+            <column name="content_type_id">10</column>
+            <column name="codename">delete_post</column>
+        </table>
+        <table name="auth_permission">
+            <column name="id">40</column>
+            <column name="name">Can view موضوع</column>
+            <column name="content_type_id">10</column>
+            <column name="codename">view_post</column>
+        </table>
+        <table name="auth_permission">
+            <column name="id">41</column>
+            <column name="name">Can add نظر</column>
+            <column name="content_type_id">11</column>
+            <column name="codename">add_comment</column>
+        </table>
+        <table name="auth_permission">
+            <column name="id">42</column>
+            <column name="name">Can change نظر</column>
+            <column name="content_type_id">11</column>
+            <column name="codename">change_comment</column>
+        </table>
+        <table name="auth_permission">
+            <column name="id">43</column>
+            <column name="name">Can delete نظر</column>
+            <column name="content_type_id">11</column>
+            <column name="codename">delete_comment</column>
+        </table>
+        <table name="auth_permission">
+            <column name="id">44</column>
+            <column name="name">Can view نظر</column>
+            <column name="content_type_id">11</column>
+            <column name="codename">view_comment</column>
+        </table>
+        <table name="auth_permission">
+            <column name="id">45</column>
+            <column name="name">Can add access attempt</column>
+            <column name="content_type_id">12</column>
+            <column name="codename">add_accessattempt</column>
+        </table>
+        <table name="auth_permission">
+            <column name="id">46</column>
+            <column name="name">Can change access attempt</column>
+            <column name="content_type_id">12</column>
+            <column name="codename">change_accessattempt</column>
+        </table>
+        <table name="auth_permission">
+            <column name="id">47</column>
+            <column name="name">Can delete access attempt</column>
+            <column name="content_type_id">12</column>
+            <column name="codename">delete_accessattempt</column>
+        </table>
+        <table name="auth_permission">
+            <column name="id">48</column>
+            <column name="name">Can view access attempt</column>
+            <column name="content_type_id">12</column>
+            <column name="codename">view_accessattempt</column>
+        </table>
+        <table name="auth_permission">
+            <column name="id">49</column>
+            <column name="name">Can add access log</column>
+            <column name="content_type_id">13</column>
+            <column name="codename">add_accesslog</column>
+        </table>
+        <table name="auth_permission">
+            <column name="id">50</column>
+            <column name="name">Can change access log</column>
+            <column name="content_type_id">13</column>
+            <column name="codename">change_accesslog</column>
+        </table>
+        <table name="auth_permission">
+            <column name="id">51</column>
+            <column name="name">Can delete access log</column>
+            <column name="content_type_id">13</column>
+            <column name="codename">delete_accesslog</column>
+        </table>
+        <table name="auth_permission">
+            <column name="id">52</column>
+            <column name="name">Can view access log</column>
+            <column name="content_type_id">13</column>
+            <column name="codename">view_accesslog</column>
+        </table>
+        <table name="auth_permission">
+            <column name="id">53</column>
+            <column name="name">Can add access failure</column>
+            <column name="content_type_id">14</column>
+            <column name="codename">add_accessfailurelog</column>
+        </table>
+        <table name="auth_permission">
+            <column name="id">54</column>
+            <column name="name">Can change access failure</column>
+            <column name="content_type_id">14</column>
+            <column name="codename">change_accessfailurelog</column>
+        </table>
+        <table name="auth_permission">
+            <column name="id">55</column>
+            <column name="name">Can delete access failure</column>
+            <column name="content_type_id">14</column>
+            <column name="codename">delete_accessfailurelog</column>
+        </table>
+        <table name="auth_permission">
+            <column name="id">56</column>
+            <column name="name">Can view access failure</column>
+            <column name="content_type_id">14</column>
+            <column name="codename">view_accessfailurelog</column>
+        </table>
+        <table name="auth_permission">
+            <column name="id">57</column>
+            <column name="name">Can add access attempt expiration</column>
+            <column name="content_type_id">15</column>
+            <column name="codename">add_accessattemptexpiration</column>
+        </table>
+        <table name="auth_permission">
+            <column name="id">58</column>
+            <column name="name">Can change access attempt expiration</column>
+            <column name="content_type_id">15</column>
+            <column name="codename">change_accessattemptexpiration</column>
+        </table>
+        <table name="auth_permission">
+            <column name="id">59</column>
+            <column name="name">Can delete access attempt expiration</column>
+            <column name="content_type_id">15</column>
+            <column name="codename">delete_accessattemptexpiration</column>
+        </table>
+        <table name="auth_permission">
+            <column name="id">60</column>
+            <column name="name">Can view access attempt expiration</column>
+            <column name="content_type_id">15</column>
+            <column name="codename">view_accessattemptexpiration</column>
+        </table>
+        <!-- Table auth_user -->
+        <table name="auth_user">
+            <column name="id">1</column>
+            <column name="password">pbkdf2_sha256$870000$jTBkSDZ5dmHbzawFYJkKQR$yE4b4F/kE5XX9/dLSP7AuieR5d29mOHWWDhGGXEYYs0=</column>
+            <column name="last_login">2026-07-09 06:49:57.250136</column>
+            <column name="is_superuser">0</column>
+            <column name="username">javad</column>
+            <column name="first_name">جواد</column>
+            <column name="last_name"></column>
+            <column name="email">javadfaramarzi386@gmail.com</column>
+            <column name="is_staff">0</column>
+            <column name="is_active">1</column>
+            <column name="date_joined">2026-07-07 06:07:03.511010</column>
+        </table>
+        <table name="auth_user">
+            <column name="id">2</column>
+            <column name="password">pbkdf2_sha256$870000$vZTg0LE7xKngucYSJjUDFC$nR1J01zVnpQ3oQlCJiwDPfXq7HIj3caW5k7Pm6Rlt+8=</column>
+            <column name="last_login">2026-07-07 08:02:51.574471</column>
+            <column name="is_superuser">0</column>
+            <column name="username">Farhad</column>
+            <column name="first_name">فرهاد</column>
+            <column name="last_name"></column>
+            <column name="email">javadfaramarzi386@gmail.com</column>
+            <column name="is_staff">0</column>
+            <column name="is_active">1</column>
+            <column name="date_joined">2026-07-07 08:01:21.848124</column>
+        </table>
+        <table name="auth_user">
+            <column name="id">3</column>
+            <column name="password">pbkdf2_sha256$870000$dMPIvHqXEzSQg8QESk2MgV$NboVLkjcUh7O6wXHmvKuJB5isb1NFWxQDE6Ayr2R3zg=</column>
+            <column name="last_login">2026-07-11 07:33:33.848535</column>
+            <column name="is_superuser">1</column>
+            <column name="username">javad_admin</column>
+            <column name="first_name"></column>
+            <column name="last_name"></column>
+            <column name="email"></column>
+            <column name="is_staff">1</column>
+            <column name="is_active">1</column>
+            <column name="date_joined">2026-07-07 10:55:17.272341</column>
+        </table>
+        <table name="auth_user">
+            <column name="id">4</column>
+            <column name="password">pbkdf2_sha256$870000$fvDxsfgL0tc6rRddTrHUVa$9MXB9zjJFenMYbR1dm4lxA4xjTNxB7WzS6Frbx+MWRU=</column>
+            <column name="last_login">2026-07-07 14:10:17.163997</column>
+            <column name="is_superuser">0</column>
+            <column name="username">Zeinabmadadi</column>
+            <column name="first_name">زینب</column>
+            <column name="last_name"></column>
+            <column name="email">zeinabmadadi386@gmail.com</column>
+            <column name="is_staff">0</column>
+            <column name="is_active">1</column>
+            <column name="date_joined">2026-07-07 14:10:09.881556</column>
+        </table>
+        <table name="auth_user">
+            <column name="id">5</column>
+            <column name="password">pbkdf2_sha256$870000$erOLudCIOiItnzK5RIooEe$iOwPiwV0B8EQY4OB+ijZ34wRa0WynRLEm8seQ5e0RNM=</column>
+            <column name="last_login">2026-07-09 08:13:32.171902</column>
+            <column name="is_superuser">0</column>
+            <column name="username">Farimah</column>
+            <column name="first_name">فریماه</column>
+            <column name="last_name"></column>
+            <column name="email">faramarzi@outlook.com</column>
+            <column name="is_staff">0</column>
+            <column name="is_active">1</column>
+            <column name="date_joined">2026-07-09 08:13:31.251494</column>
+        </table>
+        <table name="auth_user">
+            <column name="id">6</column>
+            <column name="password">pbkdf2_sha256$870000$FIxhe64ekZM3ScOPjfYtw1$COIBhzQ8Eio600BFyQegcORSRVvfMu0vEqT3M0kpuQk=</column>
+            <column name="last_login">2026-07-09 08:49:23.876744</column>
+            <column name="is_superuser">0</column>
+            <column name="username">Farimah2</column>
+            <column name="first_name">فریماه2</column>
+            <column name="last_name"></column>
+            <column name="email">javadfaramarzi3863@gmail.com</column>
+            <column name="is_staff">0</column>
+            <column name="is_active">1</column>
+            <column name="date_joined">2026-07-09 08:49:15.311395</column>
+        </table>
+        <!-- Table auth_user_groups -->
+        <!-- Table auth_user_user_permissions -->
+        <!-- Table axes_accessattempt -->
+        <!-- Table axes_accessattemptexpiration -->
+        <!-- Table axes_accessfailurelog -->
+        <!-- Table axes_accesslog -->
+        <table name="axes_accesslog">
+            <column name="id">1</column>
+            <column name="user_agent">Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36</column>
+            <column name="ip_address">127.0.0.1</column>
+            <column name="username">javad_admin</column>
+            <column name="http_accept">text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7</column>
+            <column name="path_info">/admin/login/</column>
+            <column name="attempt_time">2026-07-11 07:33:33.729678</column>
+            <column name="logout_time">NULL</column>
+            <column name="session_hash">e32d855143aef3982cd2b22201a6c10e300ca07a8366f8748d0a723d122d91c2</column>
+        </table>
+        <!-- Table django_admin_log -->
+        <!-- Table django_content_type -->
+        <table name="django_content_type">
+            <column name="id">7</column>
+            <column name="app_label">accounts</column>
+            <column name="model">profile</column>
+        </table>
+        <table name="django_content_type">
+            <column name="id">8</column>
+            <column name="app_label">accounts</column>
+            <column name="model">report</column>
+        </table>
+        <table name="django_content_type">
+            <column name="id">1</column>
+            <column name="app_label">admin</column>
+            <column name="model">logentry</column>
+        </table>
+        <table name="django_content_type">
+            <column name="id">3</column>
+            <column name="app_label">auth</column>
+            <column name="model">group</column>
+        </table>
+        <table name="django_content_type">
+            <column name="id">2</column>
+            <column name="app_label">auth</column>
+            <column name="model">permission</column>
+        </table>
+        <table name="django_content_type">
+            <column name="id">4</column>
+            <column name="app_label">auth</column>
+            <column name="model">user</column>
+        </table>
+        <table name="django_content_type">
+            <column name="id">12</column>
+            <column name="app_label">axes</column>
+            <column name="model">accessattempt</column>
+        </table>
+        <table name="django_content_type">
+            <column name="id">15</column>
+            <column name="app_label">axes</column>
+            <column name="model">accessattemptexpiration</column>
+        </table>
+        <table name="django_content_type">
+            <column name="id">14</column>
+            <column name="app_label">axes</column>
+            <column name="model">accessfailurelog</column>
+        </table>
+        <table name="django_content_type">
+            <column name="id">13</column>
+            <column name="app_label">axes</column>
+            <column name="model">accesslog</column>
+        </table>
+        <table name="django_content_type">
+            <column name="id">5</column>
+            <column name="app_label">contenttypes</column>
+            <column name="model">contenttype</column>
+        </table>
+        <table name="django_content_type">
+            <column name="id">9</column>
+            <column name="app_label">forum</column>
+            <column name="model">category</column>
+        </table>
+        <table name="django_content_type">
+            <column name="id">11</column>
+            <column name="app_label">forum</column>
+            <column name="model">comment</column>
+        </table>
+        <table name="django_content_type">
+            <column name="id">10</column>
+            <column name="app_label">forum</column>
+            <column name="model">post</column>
+        </table>
+        <table name="django_content_type">
+            <column name="id">6</column>
+            <column name="app_label">sessions</column>
+            <column name="model">session</column>
+        </table>
+        <!-- Table django_migrations -->
+        <table name="django_migrations">
+            <column name="id">1</column>
+            <column name="app">contenttypes</column>
+            <column name="name">0001_initial</column>
+            <column name="applied">2026-07-07 05:47:18.790257</column>
+        </table>
+        <table name="django_migrations">
+            <column name="id">2</column>
+            <column name="app">auth</column>
+            <column name="name">0001_initial</column>
+            <column name="applied">2026-07-07 05:47:21.528141</column>
+        </table>
+        <table name="django_migrations">
+            <column name="id">3</column>
+            <column name="app">accounts</column>
+            <column name="name">0001_initial</column>
+            <column name="applied">2026-07-07 05:47:22.269989</column>
+        </table>
+        <table name="django_migrations">
+            <column name="id">4</column>
+            <column name="app">admin</column>
+            <column name="name">0001_initial</column>
+            <column name="applied">2026-07-07 05:47:23.061320</column>
+        </table>
+        <table name="django_migrations">
+            <column name="id">5</column>
+            <column name="app">admin</column>
+            <column name="name">0002_logentry_remove_auto_add</column>
+            <column name="applied">2026-07-07 05:47:23.171436</column>
+        </table>
+        <table name="django_migrations">
+            <column name="id">6</column>
+            <column name="app">admin</column>
+            <column name="name">0003_logentry_add_action_flag_choices</column>
+            <column name="applied">2026-07-07 05:47:23.286477</column>
+        </table>
+        <table name="django_migrations">
+            <column name="id">7</column>
+            <column name="app">contenttypes</column>
+            <column name="name">0002_remove_content_type_name</column>
+            <column name="applied">2026-07-07 05:47:23.925201</column>
+        </table>
+        <table name="django_migrations">
+            <column name="id">8</column>
+            <column name="app">auth</column>
+            <column name="name">0002_alter_permission_name_max_length</column>
+            <column name="applied">2026-07-07 05:47:24.134014</column>
+        </table>
+        <table name="django_migrations">
+            <column name="id">9</column>
+            <column name="app">auth</column>
+            <column name="name">0003_alter_user_email_max_length</column>
+            <column name="applied">2026-07-07 05:47:24.321357</column>
+        </table>
+        <table name="django_migrations">
+            <column name="id">10</column>
+            <column name="app">auth</column>
+            <column name="name">0004_alter_user_username_opts</column>
+            <column name="applied">2026-07-07 05:47:24.428481</column>
+        </table>
+        <table name="django_migrations">
+            <column name="id">11</column>
+            <column name="app">auth</column>
+            <column name="name">0005_alter_user_last_login_null</column>
+            <column name="applied">2026-07-07 05:47:24.733691</column>
+        </table>
+        <table name="django_migrations">
+            <column name="id">12</column>
+            <column name="app">auth</column>
+            <column name="name">0006_require_contenttypes_0002</column>
+            <column name="applied">2026-07-07 05:47:24.829564</column>
+        </table>
+        <table name="django_migrations">
+            <column name="id">13</column>
+            <column name="app">auth</column>
+            <column name="name">0007_alter_validators_add_error_messages</column>
+            <column name="applied">2026-07-07 05:47:24.938930</column>
+        </table>
+        <table name="django_migrations">
+            <column name="id">14</column>
+            <column name="app">auth</column>
+            <column name="name">0008_alter_user_username_max_length</column>
+            <column name="applied">2026-07-07 05:47:25.227291</column>
+        </table>
+        <table name="django_migrations">
+            <column name="id">15</column>
+            <column name="app">auth</column>
+            <column name="name">0009_alter_user_last_name_max_length</column>
+            <column name="applied">2026-07-07 05:47:25.540883</column>
+        </table>
+        <table name="django_migrations">
+            <column name="id">16</column>
+            <column name="app">auth</column>
+            <column name="name">0010_alter_group_name_max_length</column>
+            <column name="applied">2026-07-07 05:47:25.750499</column>
+        </table>
+        <table name="django_migrations">
+            <column name="id">17</column>
+            <column name="app">auth</column>
+            <column name="name">0011_update_proxy_permissions</column>
+            <column name="applied">2026-07-07 05:47:26.083586</column>
+        </table>
+        <table name="django_migrations">
+            <column name="id">18</column>
+            <column name="app">auth</column>
+            <column name="name">0012_alter_user_first_name_max_length</column>
+            <column name="applied">2026-07-07 05:47:26.285484</column>
+        </table>
+        <table name="django_migrations">
+            <column name="id">19</column>
+            <column name="app">forum</column>
+            <column name="name">0001_initial</column>
+            <column name="applied">2026-07-07 05:47:28.900448</column>
+        </table>
+        <table name="django_migrations">
+            <column name="id">20</column>
+            <column name="app">forum</column>
+            <column name="name">0002_create_default_categories</column>
+            <column name="applied">2026-07-07 05:47:31.906438</column>
+        </table>
+        <table name="django_migrations">
+            <column name="id">21</column>
+            <column name="app">forum</column>
+            <column name="name">0003_category_color_category_icon_category_image</column>
+            <column name="applied">2026-07-07 05:47:32.135277</column>
+        </table>
+        <table name="django_migrations">
+            <column name="id">22</column>
+            <column name="app">forum</column>
+            <column name="name">0004_alter_post_options_category_is_visible_and_more</column>
+            <column name="applied">2026-07-07 05:47:34.189480</column>
+        </table>
+        <table name="django_migrations">
+            <column name="id">23</column>
+            <column name="app">sessions</column>
+            <column name="name">0001_initial</column>
+            <column name="applied">2026-07-07 05:47:34.471221</column>
+        </table>
+        <table name="django_migrations">
+            <column name="id">24</column>
+            <column name="app">accounts</column>
+            <column name="name">0002_alter_profile_options_alter_report_options_and_more</column>
+            <column name="applied">2026-07-09 06:20:23.035046</column>
+        </table>
+        <table name="django_migrations">
+            <column name="id">25</column>
+            <column name="app">forum</column>
+            <column name="name">0005_alter_category_image</column>
+            <column name="applied">2026-07-09 06:20:23.045498</column>
+        </table>
+        <table name="django_migrations">
+            <column name="id">26</column>
+            <column name="app">axes</column>
+            <column name="name">0001_initial</column>
+            <column name="applied">2026-07-09 09:07:54.759044</column>
+        </table>
+        <table name="django_migrations">
+            <column name="id">27</column>
+            <column name="app">axes</column>
+            <column name="name">0002_auto_20151217_2044</column>
+            <column name="applied">2026-07-09 09:07:55.028052</column>
+        </table>
+        <table name="django_migrations">
+            <column name="id">28</column>
+            <column name="app">axes</column>
+            <column name="name">0003_auto_20160322_0929</column>
+            <column name="applied">2026-07-09 09:07:55.077147</column>
+        </table>
+        <table name="django_migrations">
+            <column name="id">29</column>
+            <column name="app">axes</column>
+            <column name="name">0004_auto_20181024_1538</column>
+            <column name="applied">2026-07-09 09:07:55.105571</column>
+        </table>
+        <table name="django_migrations">
+            <column name="id">30</column>
+            <column name="app">axes</column>
+            <column name="name">0005_remove_accessattempt_trusted</column>
+            <column name="applied">2026-07-09 09:07:55.165553</column>
+        </table>
+        <table name="django_migrations">
+            <column name="id">31</column>
+            <column name="app">axes</column>
+            <column name="name">0006_remove_accesslog_trusted</column>
+            <column name="applied">2026-07-09 09:07:55.242981</column>
+        </table>
+        <table name="django_migrations">
+            <column name="id">32</column>
+            <column name="app">axes</column>
+            <column name="name">0007_alter_accessattempt_unique_together</column>
+            <column name="applied">2026-07-09 09:07:55.382646</column>
+        </table>
+        <table name="django_migrations">
+            <column name="id">33</column>
+            <column name="app">axes</column>
+            <column name="name">0008_accessfailurelog</column>
+            <column name="applied">2026-07-09 09:07:55.625934</column>
+        </table>
+        <table name="django_migrations">
+            <column name="id">34</column>
+            <column name="app">axes</column>
+            <column name="name">0009_add_session_hash</column>
+            <column name="applied">2026-07-09 09:07:56.029592</column>
+        </table>
+        <table name="django_migrations">
+            <column name="id">35</column>
+            <column name="app">axes</column>
+            <column name="name">0010_accessattemptexpiration</column>
+            <column name="applied">2026-07-09 09:07:56.283661</column>
+        </table>
+        <!-- Table django_session -->
+        <table name="django_session">
+            <column name="session_key">99p073h3p7qp7e1y2nmow38jvayprl1i</column>
+            <column name="session_data">.eJxVjEEOwiAURO_C2hCggB-X7j0D-cBHqgaS0q6Md5cmXehuMu_NvJnHbS1-67T4ObELU-z02wWMT6o7SA-s98Zjq-syB74r_KCd31qi1_Vw_w4K9jLW2UmXHWiRJjMJSc44Ja3SFC2giGhHkFkOMIEB1KBTwLMhhSYDCcE-X8MAN08:1wh0km:NZ_-rhoTP-6Z7c2IFUivJh1VJYBo7KNvMV8w18gR9qY</column>
+            <column name="expire_date">2026-07-21 08:02:04.361833</column>
+        </table>
+        <table name="django_session">
+            <column name="session_key">c0lsrz5772ff6wpddjeulipwo1agz6sn</column>
+            <column name="session_data">.eJxVjEEOwiAQRe_C2hBmaEtw6d4zkIHOSNVAUtpV490NSRe6_e-9f6hA-5bD3ngNy6yuCtTld4uUXlw6mJ9UHlWnWrZ1ibor-qRN3-vM79vp_h1karnXhkRYwDkzDYg-WSJBiWTjaMm4aCWBcPIo4D3jwDCKYXDgJm8A1ecLBnw4IQ:1whia5:hk9VWSZKe_73c270vjG7p9nSYHpDTyZNp5di-5wC-_8</column>
+            <column name="expire_date">2026-07-23 06:49:57.282631</column>
+        </table>
+        <table name="django_session">
+            <column name="session_key">f4y6jl6z9ukw0yo31xl7y23hjtq9xcuw</column>
+            <column name="session_data">.eJxVjEEOwiAQRe_C2hCYAgWX7j0DGWZAqoYmpV0Z765NutDtf-_9l4i4rTVuPS9xYnEWTpx-t4T0yG0HfMd2myXNbV2mJHdFHrTL68z5eTncv4OKvX5rHUAZC6YAE1AwZiTNIzlSYCyyheKTH5gLJV8sKk1K5SFlDkUHB0W8P9omOCs:1whkRf:CVV5XgswJGdjnY2AbSOgY6Xwqua9BMzaFdQOIOT0uaw</column>
+            <column name="expire_date">2026-07-23 08:49:23.963487</column>
+        </table>
+        <table name="django_session">
+            <column name="session_key">japge438vog1a18d8zirk8o547smqywv</column>
+            <column name="session_data">.eJxVjMsOwiAUBf-FtSEEKA-X7v0Gwn0gVQNJaVfGf9cmXej2zMx5iZS3taZt8JJmEmdhxel3g4wPbjuge263LrG3dZlB7oo86JDXTvy8HO7fQc2jfmuFXiskMugjeKsJIeRgMEZXCujoQHEIyBCJlMaJHRuli-bJmGLBifcHAZI4ng:1wh6V7:G_E4oY8r_nU3ytC4C01WSEmfHyD57Mm9ynHqZ_phxM4</column>
+            <column name="expire_date">2026-07-21 14:10:17.170357</column>
+        </table>
+        <table name="django_session">
+            <column name="session_key">jcd57qwt7smfzbj18odn968h5k7nd0g8</column>
+            <column name="session_data">.eJxVjEEOwiAURO_C2hCggB-X7j0D-cBHqgaS0q6Md5cmXehuMu_NvJnHbS1-67T4ObELU-z02wWMT6o7SA-s98Zjq-syB74r_KCd31qi1_Vw_w4K9jLW2UmXHWiRJjMJSc44Ja3SFC2giGhHkFkOMIEB1KBTwLMhhSYDCcE-X8MAN08:1wh0kH:SkdRodlCSf754195ZfEfmHf1h0mlYE5RozuFwwcgvlw</column>
+            <column name="expire_date">2026-07-21 08:01:33.185288</column>
+        </table>
+        <table name="django_session">
+            <column name="session_key">ltjr0ed35indlf7ficsabeit5tinddh1</column>
+            <column name="session_data">.eJxVjDkOwjAUBe_iGlnerVDScwbrLzYOIFuKkwpxd4iUAto3M-8lEmxrTdvIS5pZnIUVp98NgR657YDv0G5dUm_rMqPcFXnQIa-d8_NyuH8HFUb91m4CpU3WTM6rHAG1m8jaCCpyUORCwRJ9MdZj1mgiRSDLAKGogOxRvD_jWzh1:1wiSDN:Lnnl0fZFFOUoQi5sKWss_LjvDHEE89nYBgJEfKYMzhE</column>
+            <column name="expire_date">2026-07-25 07:33:33.882662</column>
+        </table>
+        <table name="django_session">
+            <column name="session_key">n9xtfn7b3ad8kouez2v7lun1z06e3xnq</column>
+            <column name="session_data">.eJxVjEEOwiAURO_C2hCggB-X7j0D-cBHqgaS0q6Md5cmXehuMu_NvJnHbS1-67T4ObELU-z02wWMT6o7SA-s98Zjq-syB74r_KCd31qi1_Vw_w4K9jLW2UmXHWiRJjMJSc44Ja3SFC2giGhHkFkOMIEB1KBTwLMhhSYDCcE-X8MAN08:1wh0kd:iyLwjbde5n6Qn8q9j-Si_VIA1BU8A6L_KPdHIgSXZE0</column>
+            <column name="expire_date">2026-07-21 08:01:55.759940</column>
+        </table>
+        <table name="django_session">
+            <column name="session_key">sy6e54m1rz8fkqomck654ga2yqrgvgsx</column>
+            <column name="session_data">.eJxVjEEOwiAURO_C2hCggB-X7j0D-cBHqgaS0q6Md5cmXehuMu_NvJnHbS1-67T4ObELU-z02wWMT6o7SA-s98Zjq-syB74r_KCd31qi1_Vw_w4K9jLW2UmXHWiRJjMJSc44Ja3SFC2giGhHkFkOMIEB1KBTwLMhhSYDCcE-X8MAN08:1wh0lX:dkleA887-Kh32Ca_M6YKSxy2HL77YX-MzJgAWHFm_9w</column>
+            <column name="expire_date">2026-07-21 08:02:51.661728</column>
+        </table>
+        <table name="django_session">
+            <column name="session_key">tb886vlltnnihdt5b6ewnhko79hv8cxq</column>
+            <column name="session_data">.eJxVjEEOwiAURO_C2hCggB-X7j0D-cBHqgaS0q6Md5cmXehuMu_NvJnHbS1-67T4ObELU-z02wWMT6o7SA-s98Zjq-syB74r_KCd31qi1_Vw_w4K9jLW2UmXHWiRJjMJSc44Ja3SFC2giGhHkFkOMIEB1KBTwLMhhSYDCcE-X8MAN08:1wh0lM:PhlXH8lf07tvp_0jeR7nM8RISL3kyax4KfTxuPMy4mY</column>
+            <column name="expire_date">2026-07-21 08:02:40.174515</column>
+        </table>
+        <!-- Table forum_category -->
+        <table name="forum_category">
+            <column name="id">1</column>
+            <column name="name">انواع معلولیت</column>
+            <column name="slug">disabilities</column>
+            <column name="description"></column>
+            <column name="display_order">1</column>
+            <column name="is_active">1</column>
+            <column name="parent_id">NULL</column>
+            <column name="color">#0d6efd</column>
+            <column name="icon"></column>
+            <column name="image">NULL</column>
+            <column name="is_visible">1</column>
+        </table>
+        <table name="forum_category">
+            <column name="id">2</column>
+            <column name="name">اوتیسم</column>
+            <column name="slug">autism</column>
+            <column name="description"></column>
+            <column name="display_order">2</column>
+            <column name="is_active">1</column>
+            <column name="parent_id">1</column>
+            <column name="color">#0d6efd</column>
+            <column name="icon"></column>
+            <column name="image">NULL</column>
+            <column name="is_visible">1</column>
+        </table>
+        <table name="forum_category">
+            <column name="id">3</column>
+            <column name="name">سندرم داون</column>
+            <column name="slug">down-syndrome</column>
+            <column name="description"></column>
+            <column name="display_order">3</column>
+            <column name="is_active">1</column>
+            <column name="parent_id">1</column>
+            <column name="color">#0d6efd</column>
+            <column name="icon"></column>
+            <column name="image">NULL</column>
+            <column name="is_visible">1</column>
+        </table>
+        <table name="forum_category">
+            <column name="id">4</column>
+            <column name="name">سندرم کری دو شا</column>
+            <column name="slug">cri-du-chat</column>
+            <column name="description"></column>
+            <column name="display_order">4</column>
+            <column name="is_active">1</column>
+            <column name="parent_id">1</column>
+            <column name="color">#0d6efd</column>
+            <column name="icon"></column>
+            <column name="image">NULL</column>
+            <column name="is_visible">1</column>
+        </table>
+        <table name="forum_category">
+            <column name="id">5</column>
+            <column name="name">فلج مغزی</column>
+            <column name="slug">cerebral-palsy</column>
+            <column name="description"></column>
+            <column name="display_order">5</column>
+            <column name="is_active">1</column>
+            <column name="parent_id">1</column>
+            <column name="color">#0d6efd</column>
+            <column name="icon"></column>
+            <column name="image">NULL</column>
+            <column name="is_visible">1</column>
+        </table>
+        <table name="forum_category">
+            <column name="id">6</column>
+            <column name="name">کم‌توانی ذهنی</column>
+            <column name="slug">intellectual-disability</column>
+            <column name="description"></column>
+            <column name="display_order">6</column>
+            <column name="is_active">1</column>
+            <column name="parent_id">1</column>
+            <column name="color">#0d6efd</column>
+            <column name="icon"></column>
+            <column name="image">NULL</column>
+            <column name="is_visible">1</column>
+        </table>
+        <table name="forum_category">
+            <column name="id">7</column>
+            <column name="name">اختلال بینایی</column>
+            <column name="slug">visual-impairment</column>
+            <column name="description"></column>
+            <column name="display_order">7</column>
+            <column name="is_active">1</column>
+            <column name="parent_id">1</column>
+            <column name="color">#0d6efd</column>
+            <column name="icon"></column>
+            <column name="image">NULL</column>
+            <column name="is_visible">1</column>
+        </table>
+        <table name="forum_category">
+            <column name="id">8</column>
+            <column name="name">اختلال شنوایی</column>
+            <column name="slug">hearing-impairment</column>
+            <column name="description"></column>
+            <column name="display_order">8</column>
+            <column name="is_active">1</column>
+            <column name="parent_id">1</column>
+            <column name="color">#0d6efd</column>
+            <column name="icon"></column>
+            <column name="image">NULL</column>
+            <column name="is_visible">1</column>
+        </table>
+        <table name="forum_category">
+            <column name="id">9</column>
+            <column name="name">درمان</column>
+            <column name="slug">treatment</column>
+            <column name="description"></column>
+            <column name="display_order">9</column>
+            <column name="is_active">1</column>
+            <column name="parent_id">NULL</column>
+            <column name="color">#0d6efd</column>
+            <column name="icon"></column>
+            <column name="image">NULL</column>
+            <column name="is_visible">1</column>
+        </table>
+        <table name="forum_category">
+            <column name="id">10</column>
+            <column name="name">کاردرمانی</column>
+            <column name="slug">occupational-therapy</column>
+            <column name="description"></column>
+            <column name="display_order">10</column>
+            <column name="is_active">1</column>
+            <column name="parent_id">9</column>
+            <column name="color">#0d6efd</column>
+            <column name="icon"></column>
+            <column name="image">NULL</column>
+            <column name="is_visible">1</column>
+        </table>
+        <table name="forum_category">
+            <column name="id">11</column>
+            <column name="name">گفتاردرمانی</column>
+            <column name="slug">speech-therapy</column>
+            <column name="description"></column>
+            <column name="display_order">11</column>
+            <column name="is_active">1</column>
+            <column name="parent_id">9</column>
+            <column name="color">#0d6efd</column>
+            <column name="icon"></column>
+            <column name="image">NULL</column>
+            <column name="is_visible">1</column>
+        </table>
+        <table name="forum_category">
+            <column name="id">12</column>
+            <column name="name">فیزیوتراپی</column>
+            <column name="slug">physiotherapy</column>
+            <column name="description"></column>
+            <column name="display_order">12</column>
+            <column name="is_active">1</column>
+            <column name="parent_id">9</column>
+            <column name="color">#0d6efd</column>
+            <column name="icon"></column>
+            <column name="image">NULL</column>
+            <column name="is_visible">1</column>
+        </table>
+        <table name="forum_category">
+            <column name="id">13</column>
+            <column name="name">روانشناسی</column>
+            <column name="slug">psychology</column>
+            <column name="description"></column>
+            <column name="display_order">13</column>
+            <column name="is_active">1</column>
+            <column name="parent_id">9</column>
+            <column name="color">#0d6efd</column>
+            <column name="icon"></column>
+            <column name="image">NULL</column>
+            <column name="is_visible">1</column>
+        </table>
+        <table name="forum_category">
+            <column name="id">14</column>
+            <column name="name">آموزش</column>
+            <column name="slug">education</column>
+            <column name="description"></column>
+            <column name="display_order">14</column>
+            <column name="is_active">1</column>
+            <column name="parent_id">NULL</column>
+            <column name="color">#0d6efd</column>
+            <column name="icon"></column>
+            <column name="image">NULL</column>
+            <column name="is_visible">1</column>
+        </table>
+        <table name="forum_category">
+            <column name="id">15</column>
+            <column name="name">آموزش در خانه</column>
+            <column name="slug">home-education</column>
+            <column name="description"></column>
+            <column name="display_order">15</column>
+            <column name="is_active">1</column>
+            <column name="parent_id">14</column>
+            <column name="color">#0d6efd</column>
+            <column name="icon"></column>
+            <column name="image">NULL</column>
+            <column name="is_visible">1</column>
+        </table>
+        <table name="forum_category">
+            <column name="id">16</column>
+            <column name="name">مدرسه</column>
+            <column name="slug">school</column>
+            <column name="description"></column>
+            <column name="display_order">16</column>
+            <column name="is_active">1</column>
+            <column name="parent_id">14</column>
+            <column name="color">#0d6efd</column>
+            <column name="icon"></column>
+            <column name="image">NULL</column>
+            <column name="is_visible">1</column>
+        </table>
+        <table name="forum_category">
+            <column name="id">17</column>
+            <column name="name">مهارت های زندگی</column>
+            <column name="slug">life-skills</column>
+            <column name="description"></column>
+            <column name="display_order">17</column>
+            <column name="is_active">1</column>
+            <column name="parent_id">14</column>
+            <column name="color">#0d6efd</column>
+            <column name="icon"></column>
+            <column name="image">NULL</column>
+            <column name="is_visible">1</column>
+        </table>
+        <table name="forum_category">
+            <column name="id">18</column>
+            <column name="name">بازی درمانی</column>
+            <column name="slug">play-therapy</column>
+            <column name="description"></column>
+            <column name="display_order">18</column>
+            <column name="is_active">1</column>
+            <column name="parent_id">14</column>
+            <column name="color">#0d6efd</column>
+            <column name="icon"></column>
+            <column name="image">NULL</column>
+            <column name="is_visible">1</column>
+        </table>
+        <!-- Table forum_comment -->
+        <table name="forum_comment">
+            <column name="id">1</column>
+            <column name="content">سلام</column>
+            <column name="created_at">2026-07-07 08:03:10.029926</column>
+            <column name="is_approved">1</column>
+            <column name="author_id">2</column>
+            <column name="post_id">1</column>
+            <column name="is_edited">0</column>
+            <column name="parent_id">NULL</column>
+            <column name="updated_at">2026-07-07 08:03:10.029971</column>
+        </table>
+        <table name="forum_comment">
+            <column name="id">2</column>
+            <column name="content">👍🏻</column>
+            <column name="created_at">2026-07-07 14:14:38.276895</column>
+            <column name="is_approved">1</column>
+            <column name="author_id">4</column>
+            <column name="post_id">1</column>
+            <column name="is_edited">0</column>
+            <column name="parent_id">NULL</column>
+            <column name="updated_at">2026-07-07 14:14:38.276921</column>
+        </table>
+        <table name="forum_comment">
+            <column name="id">3</column>
+            <column name="content">سلام</column>
+            <column name="created_at">2026-07-09 08:14:22.895562</column>
+            <column name="is_approved">1</column>
+            <column name="author_id">5</column>
+            <column name="post_id">2</column>
+            <column name="is_edited">0</column>
+            <column name="parent_id">NULL</column>
+            <column name="updated_at">2026-07-09 08:14:22.895617</column>
+        </table>
+        <table name="forum_comment">
+            <column name="id">4</column>
+            <column name="content">Hi</column>
+            <column name="created_at">2026-07-09 08:14:50.047086</column>
+            <column name="is_approved">1</column>
+            <column name="author_id">5</column>
+            <column name="post_id">1</column>
+            <column name="is_edited">0</column>
+            <column name="parent_id">NULL</column>
+            <column name="updated_at">2026-07-09 08:14:50.047141</column>
+        </table>
+        <!-- Table forum_post -->
+        <table name="forum_post">
+            <column name="id">1</column>
+            <column name="title">نظر سنجی</column>
+            <column name="content">لطفا نظر خود را در مورد محولاتی بیان کنید</column>
+            <column name="created_at">2026-07-07 06:08:21.558586</column>
+            <column name="updated_at">2026-07-07 06:08:21.558628</column>
+            <column name="is_approved">1</column>
+            <column name="author_id">1</column>
+            <column name="category_id">4</column>
+            <column name="is_locked">0</column>
+            <column name="is_pinned">0</column>
+            <column name="views">44</column>
+        </table>
+        <table name="forum_post">
+            <column name="id">2</column>
+            <column name="title">تغذیه در کودکان تربیت پذیر</column>
+            <column name="content">بنظر بنده در این کودکان حدالامکان غذا را بصورت کامل میکس شده از اول به بچه ندهید تا کودک از نهایت قدرت جویدن خود استفاده و تلاش کند.</column>
+            <column name="created_at">2026-07-07 14:12:31.366501</column>
+            <column name="updated_at">2026-07-07 14:12:31.366578</column>
+            <column name="is_approved">1</column>
+            <column name="author_id">4</column>
+            <column name="category_id">15</column>
+            <column name="is_locked">0</column>
+            <column name="is_pinned">0</column>
+            <column name="views">14</column>
+        </table>
+        <!-- Table forum_post_likes -->
+        <table name="forum_post_likes">
+            <column name="id">1</column>
+            <column name="post_id">1</column>
+            <column name="user_id">2</column>
+        </table>
+        <table name="forum_post_likes">
+            <column name="id">3</column>
+            <column name="post_id">2</column>
+            <column name="user_id">1</column>
+        </table>
+        <table name="forum_post_likes">
+            <column name="id">2</column>
+            <column name="post_id">2</column>
+            <column name="user_id">2</column>
+        </table>
+        <table name="forum_post_likes">
+            <column name="id">4</column>
+            <column name="post_id">2</column>
+            <column name="user_id">5</column>
+        </table>
+    </database>
+</pma_xml_export>

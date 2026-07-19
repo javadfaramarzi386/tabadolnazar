@@ -14,6 +14,7 @@ from django.db.models import Q, Count
 
 from .models import Post, Category
 from .forms import PostForm, CommentForm
+from django.views.decorators.http import require_POST
 
 
 # =============================================================================
@@ -225,15 +226,16 @@ def delete_post(request, pk):
 # =============================================================================
 
 @login_required
+@require_POST
 def like_post(request, pk):
     """
     لایک یا لغو لایک یک پست.
     """
     post = get_object_or_404(Post, pk=pk)
 
-    if request.user in post.likes.all():  # اگر قبلاً لایک کرده بود
-        post.likes.remove(request.user)  # ← لایک را لغو کن
+    if post.likes.filter(pk=request.user.pk).exists():
+        post.likes.remove(request.user)
     else:
-        post.likes.add(request.user)  # ← لایک کن
+        post.likes.add(request.user)
 
     return redirect("forum:post_detail", pk=pk)

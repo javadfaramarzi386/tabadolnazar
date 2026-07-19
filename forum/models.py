@@ -11,6 +11,7 @@
 """
 
 from django.db import models
+from django.db.models import F
 from django.utils.text import slugify
 from django.contrib.auth.models import User
 
@@ -176,10 +177,10 @@ class Post(models.Model):
         return self.total_likes >= 10
 
     def increase_views(self):
-        """افزایش تعداد بازدید"""
-        self.views += 1
-        self.save(update_fields=["views"])
-
+        """افزایش تعداد بازدید به‌صورت اتمیک."""
+        type(self).objects.filter(pk=self.pk).update(
+            views=F("views") + 1
+        )
     def __str__(self):
         return self.title
 

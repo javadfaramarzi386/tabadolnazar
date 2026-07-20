@@ -1,6 +1,7 @@
 # forum_project/settings.py
 
 import os
+import sys
 from pathlib import Path
 
 from dotenv import load_dotenv
@@ -81,7 +82,19 @@ TEMPLATES = [
 
 DB_ENGINE = os.getenv("DB_ENGINE", "sqlite")
 
-if DB_ENGINE == "mysql":
+
+if "test" in sys.argv:
+
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "test_db.sqlite3",
+        }
+    }
+
+
+elif DB_ENGINE == "mysql":
+
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.mysql",
@@ -93,13 +106,6 @@ if DB_ENGINE == "mysql":
             "OPTIONS": {
                 "charset": "utf8mb4",
             },
-        }
-    }
-else:
-    DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.sqlite3",
-            "NAME": BASE_DIR / "db.sqlite3",
         }
     }
 

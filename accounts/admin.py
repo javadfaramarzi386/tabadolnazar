@@ -6,14 +6,23 @@ from .models import Profile, Report
 
 @admin.register(Profile)
 class ProfileAdmin(admin.ModelAdmin):
+
     list_display = (
         "user",
-        "membership_status",
         "nickname",
+        "membership_status",
+        "verification_requested",
+        "relationship_to_child",
         "child_age",
         "condition_type",
         "location",
-        "show_bio",
+        "created_at",
+    )
+
+    list_filter = (
+        "membership_status",
+        "verification_requested",
+        "condition_type",
         "created_at",
     )
 
@@ -23,18 +32,40 @@ class ProfileAdmin(admin.ModelAdmin):
         "nickname",
         "location",
         "condition_type",
-    )
-
-    list_filter = (
-        "membership_status",
-        "show_bio",
-        "show_child_age",
-        "show_condition_type",
-        "show_location",
-        "created_at",
+        "relationship_to_child",
     )
 
     ordering = ("-created_at",)
+
+    actions = [
+        "approve_members",
+        "block_members",
+        "pending_members",
+    ]
+
+
+    @admin.action(description="تأیید اعضای انتخاب شده")
+    def approve_members(self, request, queryset):
+
+        queryset.update(
+            membership_status="verified"
+        )
+
+
+    @admin.action(description="مسدود کردن اعضای انتخاب شده")
+    def block_members(self, request, queryset):
+
+        queryset.update(
+            membership_status="blocked"
+        )
+
+
+    @admin.action(description="بازگرداندن به انتظار بررسی")
+    def pending_members(self, request, queryset):
+
+        queryset.update(
+            membership_status="pending"
+        )
 
 
 @admin.register(Report)

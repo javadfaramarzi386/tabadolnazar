@@ -8,6 +8,7 @@ from django.views.decorators.http import require_POST
 
 from .forms import CommentForm, PostForm
 from .models import Category, Post
+from accounts.decorators import verified_member_required
 
 
 def post_list(request):
@@ -102,12 +103,16 @@ def post_detail(request, pk):
     )
 
     if request.method == "POST":
-        if not request.user.is_authenticated:
-            messages.error(
+        if request.user.profile.membership_status != "verified":
+            messages.warning(
                 request,
-                "برای ارسال نظر باید وارد حساب کاربری خود شوید.",
+                "برای ارسال نظر باید عضویت شما تأیید شده باشد."
             )
-            return redirect("accounts:login")
+
+            return redirect(
+                "forum:post_detail",
+                pk=post.pk
+            )
 
         form = CommentForm(request.POST)
 
@@ -135,16 +140,8 @@ def post_detail(request, pk):
 
 
 @login_required
+@verified_member_required
 def create_post(request):
-
-    if request.user.profile.membership_status != "verified":
-
-        messages.warning(
-            request,
-            "حساب شما هنوز تأیید نشده است. پس از بررسی عضویت، امکان ایجاد موضوع فعال خواهد شد."
-        )
-
-        return redirect("forum:post_list")
 
     if request.method == "POST":
         form = PostForm(request.POST)

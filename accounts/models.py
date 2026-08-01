@@ -35,6 +35,22 @@ class Profile(models.Model):
         default="pending",
         verbose_name="وضعیت عضویت",
     )
+    verification_requested = models.BooleanField(
+        default=False,
+        verbose_name="درخواست بررسی عضویت",
+    )
+
+    relationship_to_child = models.CharField(
+        max_length=50,
+        blank=True,
+        verbose_name="نسبت با کودک",
+    )
+
+    verification_note = models.TextField(
+        max_length=500,
+        blank=True,
+        verbose_name="توضیح برای مدیر",
+    )
 
     avatar = models.ImageField(
         upload_to="avatars/",

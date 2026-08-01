@@ -136,6 +136,16 @@ def post_detail(request, pk):
 
 @login_required
 def create_post(request):
+
+    if request.user.profile.membership_status != "verified":
+
+        messages.warning(
+            request,
+            "حساب شما هنوز تأیید نشده است. پس از بررسی عضویت، امکان ایجاد موضوع فعال خواهد شد."
+        )
+
+        return redirect("forum:post_list")
+
     if request.method == "POST":
         form = PostForm(request.POST)
 
@@ -144,8 +154,16 @@ def create_post(request):
             post.author = request.user
             post.save()
 
-            messages.success(request, "موضوع شما با موفقیت ایجاد شد.")
-            return redirect("forum:post_detail", pk=post.pk)
+            messages.success(
+                request,
+                "موضوع شما با موفقیت ایجاد شد."
+            )
+
+            return redirect(
+                "forum:post_detail",
+                pk=post.pk
+            )
+
     else:
         form = PostForm()
 

@@ -30,7 +30,11 @@ def register(request):
                 "ثبت‌نام با موفقیت انجام شد. خوش آمدید!"
             )
 
-            login(request, user)
+            login(
+                request,
+                user,
+                backend="django.contrib.auth.backends.ModelBackend"
+            )
 
             return redirect("home")
 

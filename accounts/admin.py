@@ -1,3 +1,4 @@
+# accounts/admin.py
 from django.contrib import admin
 
 from .models import Profile, Report
@@ -7,6 +8,7 @@ from .models import Profile, Report
 class ProfileAdmin(admin.ModelAdmin):
     list_display = (
         "user",
+        "membership_status",
         "nickname",
         "child_age",
         "condition_type",
@@ -24,6 +26,7 @@ class ProfileAdmin(admin.ModelAdmin):
     )
 
     list_filter = (
+        "membership_status",
         "show_bio",
         "show_child_age",
         "show_condition_type",

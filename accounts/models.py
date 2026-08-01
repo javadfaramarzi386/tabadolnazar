@@ -23,6 +23,18 @@ class Profile(models.Model):
         related_name="profile",
         verbose_name="کاربر",
     )
+    MEMBERSHIP_STATUS = [
+        ("pending", "در انتظار بررسی"),
+        ("verified", "عضو تأیید شده"),
+        ("blocked", "مسدود شده"),
+    ]
+
+    membership_status = models.CharField(
+        max_length=20,
+        choices=MEMBERSHIP_STATUS,
+        default="pending",
+        verbose_name="وضعیت عضویت",
+    )
 
     avatar = models.ImageField(
         upload_to="avatars/",

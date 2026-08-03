@@ -1,16 +1,18 @@
 # accounts/urls.py
 
 from django.contrib.auth import views as auth_views
-from django.urls import path
+from django.urls import path, reverse_lazy
 
 from . import views
 
-
 app_name = "accounts"
 
-
 urlpatterns = [
-    path("register/", views.register, name="register"),
+    path(
+        "register/",
+        views.register,
+        name="register",
+    ),
 
     path(
         "login/",
@@ -24,7 +26,9 @@ urlpatterns = [
 
     path(
         "logout/",
-        auth_views.LogoutView.as_view(next_page="home"),
+        auth_views.LogoutView.as_view(
+            next_page="home",
+        ),
         name="logout",
     ),
 
@@ -34,7 +38,7 @@ urlpatterns = [
             template_name="registration/password_reset.html",
             subject_template_name="registration/password_reset_subject.txt",
             email_template_name="registration/password_reset_email.html",
-            success_url="/accounts/password-reset/done/",
+            success_url=reverse_lazy("accounts:password_reset_done"),
         ),
         name="password_reset",
     ),
@@ -48,9 +52,16 @@ urlpatterns = [
     ),
 
     path(
+        "password-reset-success/",
+        views.password_reset_success,
+        name="password_reset_success",
+    ),
+
+    path(
         "password-reset-confirm/<uidb64>/<token>/",
         auth_views.PasswordResetConfirmView.as_view(
             template_name="registration/password_reset_confirm.html",
+            success_url=reverse_lazy("accounts:password_reset_success"),
         ),
         name="password_reset_confirm",
     ),

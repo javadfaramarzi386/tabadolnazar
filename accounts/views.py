@@ -1,6 +1,7 @@
 # accounts/views.py
 
 from django.contrib import messages
+from django.shortcuts import redirect
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
@@ -222,6 +223,12 @@ def report_user(request, username):
         }
     )
 
+def password_reset_success(request):
+    messages.success(
+        request,
+        "رمز عبور شما با موفقیت تغییر کرد. اکنون می‌توانید وارد حساب کاربری شوید."
+    )
+    return redirect("home")
 
 def home_page(request):
     """Render the home page."""

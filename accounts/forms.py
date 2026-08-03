@@ -75,6 +75,7 @@ class UserRegistrationForm(forms.ModelForm):
         label="تکرار رمز عبور",
     )
 
+
     email = forms.EmailField(
         required=True,
         widget=forms.EmailInput(
@@ -86,10 +87,13 @@ class UserRegistrationForm(forms.ModelForm):
         label="ایمیل",
     )
 
+
     avatar = forms.ImageField(
         required=False,
         widget=forms.ClearableFileInput(
-            attrs={"class": "form-control"}
+            attrs={
+                "class": "form-control"
+            }
         ),
         label="عکس پروفایل (اختیاری)",
         help_text="حداکثر ۵ مگابایت - فرمت‌های مجاز: jpg, jpeg, png",
@@ -101,17 +105,27 @@ class UserRegistrationForm(forms.ModelForm):
         ],
     )
 
+
     class Meta:
+
         model = User
-        fields = ["username", "email", "first_name"]
+
+        fields = [
+            "username",
+            "email",
+            "first_name",
+        ]
+
 
         widgets = {
+
             "username": forms.TextInput(
                 attrs={
                     "class": "form-control",
                     "placeholder": "نام کاربری",
                 }
             ),
+
             "first_name": forms.TextInput(
                 attrs={
                     "class": "form-control",
@@ -120,14 +134,23 @@ class UserRegistrationForm(forms.ModelForm):
             ),
         }
 
+
         help_texts = {
-            "username": (
-                "فقط حروف انگلیسی، اعداد و @/./+/-/_ مجاز است."
-            ),
+
+            "username":
+                "فقط حروف انگلیسی، اعداد و @/./+/-/_ مجاز است.",
+
         }
 
+
+
     def clean_username(self):
-        username = self.cleaned_data.get("username", "").strip()
+
+        username = self.cleaned_data.get(
+            "username",
+            ""
+        ).strip()
+
 
         reserved = {
             "admin",
@@ -140,74 +163,134 @@ class UserRegistrationForm(forms.ModelForm):
             "superuser",
         }
 
+
         if username.lower() in reserved:
+
             raise forms.ValidationError(
                 "انتخاب این نام کاربری مجاز نیست."
             )
 
-        if User.objects.filter(username__iexact=username).exists():
+
+        if User.objects.filter(
+            username__iexact=username
+        ).exists():
+
             raise forms.ValidationError(
                 "این نام کاربری قبلاً ثبت شده است."
             )
 
+
         return username
 
-    def clean_email(self):
-        email = self.cleaned_data.get("email", "").strip().lower()
 
-        if User.objects.filter(email__iexact=email).exists():
+
+    def clean_email(self):
+
+        email = self.cleaned_data.get(
+            "email",
+            ""
+        ).strip().lower()
+
+
+        if User.objects.filter(
+            email__iexact=email
+        ).exists():
+
             raise forms.ValidationError(
-                "این ایمیل قبلاً ثبت شده است."
+                "این ایمیل قبلاً برای یک حساب کاربری استفاده شده است."
             )
+
 
         return email
 
+
+
     def clean_avatar(self):
-        image = self.cleaned_data.get("avatar")
+
+        image = self.cleaned_data.get(
+            "avatar"
+        )
+
 
         if image:
+
             return compress_avatar(image)
+
 
         return image
 
-    def clean_password(self):
-        password = self.cleaned_data.get("password")
 
-        validate_password(password)
+
+    def clean_password(self):
+
+        password = self.cleaned_data.get(
+            "password"
+        )
+
+
+        if password:
+
+            validate_password(password)
+
 
         return password
 
-    def clean_password2(self):
-        password = self.cleaned_data.get("password")
-        password2 = self.cleaned_data.get("password2")
 
-        if password != password2:
-            raise forms.ValidationError(
-                "رمزهای عبور مطابقت ندارند."
-            )
+
+    def clean_password2(self):
+
+        password = self.cleaned_data.get(
+            "password"
+        )
+
+        password2 = self.cleaned_data.get(
+            "password2"
+        )
+
+
+        if password and password2:
+
+            if password != password2:
+
+                raise forms.ValidationError(
+                    "رمزهای عبور مطابقت ندارند."
+                )
+
 
         return password2
 
-    def save(self, commit=True):
-        user = super().save(commit=False)
 
-        user.email = self.cleaned_data["email"]
-        user.set_password(self.cleaned_data["password"])
+
+    def save(self, commit=True):
+
+        user = super().save(
+            commit=False
+        )
+
+
+        user.set_password(
+            self.cleaned_data["password"]
+        )
+
 
         if commit:
+
             user.save()
+
 
             profile, _ = Profile.objects.get_or_create(
                 user=user
             )
 
+
             if self.cleaned_data.get("avatar"):
+
                 profile.avatar = self.cleaned_data["avatar"]
+
                 profile.save()
 
+
         return user
-
-
 class ProfileForm(forms.ModelForm):
 
     avatar = forms.ImageField(

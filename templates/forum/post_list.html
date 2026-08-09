@@ -1,4 +1,4 @@
-<!--                    templates/forum/post_list.html                         -->
+ <!--                templates/forum/post_list.html                           -->
 
 {% extends 'base.html' %}
 
@@ -6,140 +6,209 @@
 
 {% block content %}
 
-<div class="row">
 
-    <div class="col-lg-3 mb-4">
-        <div class="card shadow-sm border-0 rounded-4">
-            <div class="card-header text-white" style="background:linear-gradient(135deg,#0d6efd,#00c6d7);">
-                <h5 class="mb-0"><i class="bi bi-grid"></i> دسته بندی ها</h5>
-            </div>
-            <div class="list-group list-group-flush">
-                <a href="{% url 'forum:post_list' %}" class="list-group-item list-group-item-action {% if not category %}active{% endif %}">
-                    همه موضوعات
-                    <span class="badge bg-primary rounded-pill float-end">{{ posts.count }}</span>
-                </a>
-                {% for cat in categories %}
-                    <a href="{% url 'forum:category_posts' cat.slug %}" class="list-group-item list-group-item-action {% if category == cat %}active{% endif %}">
-                        {{ cat.name }}
-                        <span class="badge bg-secondary rounded-pill float-end">{{ cat.post_count }}</span>
-                    </a>
-                {% endfor %}
-            </div>
-        </div>
-    </div>
+<div class="col-12">
 
-    <div class="col-lg-9">
-        <div class="card border-0 shadow rounded-4 mb-4 overflow-hidden">
-            <div class="card-body p-5" style="background:linear-gradient(135deg,#0d6efd,#00c6d7);color:white;">
-                <div class="row align-items-center">
-                    <div class="col-lg-8">
-                        <h2 class="fw-bold"><i class="bi bi-people-fill"></i> انجمن تبادل نظر</h2>
+    <!-- سربرگ انجمن یا دسته -->
+    <div class="card border-0 shadow rounded-4 mb-4 overflow-hidden">
+
+        <div class="card-body p-5"
+             style="background:linear-gradient(135deg,#0d6efd,#00c6d7);color:white;">
+
+            <div class="row align-items-center">
+
+                <div class="col-lg-12">
+
+                    {% if category %}
+
+                        <!-- عنوان دسته -->
+                        <h2 class="fw-bold">
+                            <i class="bi bi-folder2-open"></i>
+                            {{ category.name }}
+                        </h2>
+
+                        <!-- توضیحات اختصاصی دسته -->
+                        {% if category.description %}
+                            <p class="mt-3 mb-0">
+                                {{ category.description|linebreaksbr }}
+                            </p>
+                        {% else %}
+                            <p class="mt-3 mb-0">
+                                در این بخش می‌توانید موضوعات و تجربه‌های مرتبط با
+                                {{ category.name }} را با دیگر اعضای انجمن به اشتراک بگذارید.
+                            </p>
+                        {% endif %}
+
+                    {% else %}
+
+                        <!-- صفحه اصلی انجمن -->
+                        <h2 class="fw-bold">
+                            <i class="bi bi-people-fill"></i>
+                            انجمن تبادل نظر
+                        </h2>
+
                         <p class="mt-3">
-                            فضایی برای گفتگو، پرسش، پاسخ و حمایت از خانواده‌های دارای فرزند با نیازهای ویژه
+                            فضایی برای گفتگو، پرسش، پاسخ و حمایت از خانواده‌های
+                            دارای فرزند با نیازهای ویژه
                         </p>
-                        <a href="{% url 'forum:create_post' %}" class="btn btn-light rounded-pill btn-lg">
-                            <i class="bi bi-plus-circle-fill"></i> ایجاد موضوع جدید
-                        </a>
-                    </div>
-                    <div class="col-lg-4 text-center">
-                        <div class="row">
-                            <div class="col-4">
-                                <h3>{{ posts.count }}</h3>
-                                <small>موضوع</small>
-                            </div>
-                            <div class="col-4">
-                                <h3>{{ categories.count }}</h3>
-                                <small>دسته</small>
-                            </div>
-                            <div class="col-4">
-                                <h3>{{ user.is_authenticated|yesno:"✓,؟" }}</h3>
-                                <small>عضو</small>
-                            </div>
-                        </div>
-                    </div>
+
+                    {% endif %}
+
+
+                    <a href="{% url 'forum:create_post' %}"
+                       class="btn btn-light rounded-pill btn-lg mt-3">
+                        <i class="bi bi-plus-circle-fill"></i>
+                        ایجاد موضوع جدید
+                    </a>
+
                 </div>
+
+
+               </div>
+
             </div>
+
         </div>
 
-        {% for post in posts %}
-            <div class="card forum-card border-0 shadow-sm rounded-4 mb-4">
-                <div class="card-body">
-                    <div class="row align-items-center">
-                        <div class="col-md-1 text-center mb-3 mb-md-0">
-                            <a href="{% url 'accounts:profile_detail' post.author.username %}" class="text-decoration-none">
-                                {% if post.author.profile.avatar %}
-                                    <img src="{{ post.author.profile.avatar.url }}" class="rounded-circle shadow" style="width:70px;height:70px;object-fit:cover;">
-                                {% else %}
-                                    <div class="rounded-circle bg-light d-flex align-items-center justify-content-center shadow" style="width:70px;height:70px;margin:auto;">
-                                        <i class="bi bi-person-fill fs-2 text-secondary"></i>
-                                    </div>
-                                {% endif %}
-                            </a>
-                        </div>
-                        <div class="col-md-8">
-                            <h4 class="mb-2">
-                                <a href="{% url 'forum:post_detail' post.pk %}" class="text-decoration-none fw-bold post-title">{{ post.title }}</a>
-                            </h4>
-                            <div class="text-muted small mb-3">
-                                <i class="bi bi-person-circle"></i>
-                                <a href="{% url 'accounts:profile_detail' post.author.username %}" class="text-decoration-none text-muted">
-                                    {{ post.author.profile.nickname|default:post.author.username }}
-                                </a>
-                                &nbsp;&nbsp;
-                                <i class="bi bi-clock"></i>
-                                {{ post.created_at|timesince }} پیش
-                            </div>
-                            <span class="badge rounded-pill bg-secondary mb-3">{{ post.category.name }}</span>
-                            <p class="text-muted mt-3">{{ post.content|truncatewords:35 }}</p>
-                        </div>
-                        <div class="col-md-3 text-center">
-                            <div class="mb-2">
-                                <span class="badge bg-danger px-3 py-2">❤️ {{ post.total_likes }}</span>
-                            </div>
-                            <div class="mb-2">
-                                <span class="badge bg-success px-3 py-2">💬 {{ post.total_comments }}</span>
-                            </div>
-                            <div class="mb-3">
-                                <span class="badge bg-info px-3 py-2">👁 {{ post.views }}</span>
-                            </div>
-                            <a href="{% url 'forum:post_detail' post.pk %}" class="btn btn-primary rounded-pill">مشاهده موضوع</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        {% empty %}
-            <div class="alert alert-info rounded-4 text-center p-5">
-                <h4>هنوز موضوعی ثبت نشده است.</h4>
-                <a href="{% url 'forum:create_post' %}" class="btn btn-primary mt-3">اولین موضوع را ایجاد کنید</a>
-            </div>
-        {% endfor %}
     </div>
+
+
+    <!-- فهرست موضوعات -->
+
+    {% for post in posts %}
+
+        <div class="card forum-card border-0 shadow-sm rounded-4 mb-4">
+
+            <div class="card-body">
+
+                <div class="row align-items-center">
+
+                    <div class="col-md-1 text-center mb-3 mb-md-0">
+
+                        <a href="{% url 'accounts:profile_detail' post.author.username %}"
+                           class="text-decoration-none">
+
+                            {% if post.author.profile.avatar %}
+
+                                <img src="{{ post.author.profile.avatar.url }}"
+                                     class="rounded-circle shadow"
+                                     style="width:70px;height:70px;object-fit:cover;">
+
+                            {% else %}
+
+                                <div class="rounded-circle bg-light d-flex align-items-center justify-content-center shadow"
+                                     style="width:70px;height:70px;margin:auto;">
+
+                                    <i class="bi bi-person-fill fs-2 text-secondary"></i>
+
+                                </div>
+
+                            {% endif %}
+
+                        </a>
+
+                    </div>
+
+
+                    <div class="col-md-8">
+
+                        <h4 class="mb-2">
+
+                            <a href="{% url 'forum:post_detail' post.pk %}"
+                               class="text-decoration-none fw-bold post-title">
+
+                                {{ post.title }}
+
+                            </a>
+
+                        </h4>
+
+
+                        <div class="text-muted small mb-3">
+
+                            <i class="bi bi-person-circle"></i>
+
+                            <a href="{% url 'accounts:profile_detail' post.author.username %}"
+                               class="text-decoration-none text-muted">
+
+                                {{ post.author.profile.nickname|default:post.author.username }}
+
+                            </a>
+
+                            &nbsp;&nbsp;
+
+                            <i class="bi bi-clock"></i>
+
+                            {{ post.created_at|timesince }} پیش
+
+                        </div>
+
+
+                        <span class="badge rounded-pill bg-secondary mb-3">
+                            {{ post.category.name }}
+                        </span>
+
+
+                        <p class="text-muted mt-3">
+                            {{ post.content|truncatewords:35 }}
+                        </p>
+
+                    </div>
+
+
+                    <div class="col-md-3 text-center">
+
+                        <div class="mb-2">
+                            <span class="badge bg-danger px-3 py-2">
+                                ❤️ {{ post.total_likes }}
+                            </span>
+                        </div>
+
+                        <div class="mb-2">
+                            <span class="badge bg-success px-3 py-2">
+                                💬 {{ post.total_comments }}
+                            </span>
+                        </div>
+
+                        <div class="mb-3">
+                            <span class="badge bg-info px-3 py-2">
+                                👁 {{ post.views }}
+                            </span>
+                        </div>
+
+                        <a href="{% url 'forum:post_detail' post.pk %}"
+                           class="btn btn-primary rounded-pill">
+
+                            مشاهده موضوع
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    {% empty %}
+
+        <div class="alert alert-info rounded-4 text-center p-5">
+
+            <h4>هنوز موضوعی ثبت نشده است.</h4>
+
+            <a href="{% url 'forum:create_post' %}"
+               class="btn btn-primary mt-3">
+
+                اولین موضوع را ایجاد کنید
+
+            </a>
+
+        </div>
+
+    {% endfor %}
+
 </div>
 
-<style>
-    .forum-card {
-        transition: .35s;
-        border-left: 6px solid #00c6d7;
-    }
-    .forum-card:hover {
-        transform: translateY(-6px);
-        box-shadow: 0 18px 40px rgba(0,0,0,.15)!important;
-        border-left-color: #0d6efd;
-    }
-    .post-title {
-        color: #0d6efd;
-        transition: .3s;
-    }
-    .post-title:hover {
-        color: #00a9c7;
-    }
-    .list-group-item {
-        border: none;
-    }
-    .list-group-item.active {
-        background: linear-gradient(135deg,#0d6efd,#00c6d7);
-        border: none;
-    }
-</style>
-
 {% endblock %}
+

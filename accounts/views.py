@@ -7,7 +7,12 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404, redirect, render
 
-from .forms import ProfileForm, UserRegistrationForm
+# from .forms import ProfileForm, UserRegistrationForm
+from .forms import (
+    ProfileForm,
+    UserRegistrationForm,
+    MembershipVerificationForm,
+)
 from .models import Profile, Report
 
 
@@ -238,5 +243,61 @@ def home_page(request):
         "accounts/home.html",
         {
             "title": "خانه",
+        }
+    )
+@login_required
+def request_membership_verification(request):
+
+    profile, created = Profile.objects.get_or_create(
+        user=request.user
+    )
+
+
+    if request.method == "POST":
+
+        form = MembershipVerificationForm(
+            request.POST,
+            instance=profile
+        )
+
+
+        if form.is_valid():
+
+            verification = form.save(
+                commit=False
+            )
+
+            verification.verification_requested = True
+
+            verification.membership_status = "pending"
+
+            verification.save()
+
+
+            messages.success(
+                request,
+                "درخواست بررسی عضویت شما ارسال شد."
+            )
+
+
+            return redirect(
+                "accounts:profile_detail",
+                username=request.user.username
+            )
+
+
+    else:
+
+        form = MembershipVerificationForm(
+            instance=profile
+        )
+
+
+    return render(
+        request,
+        "accounts/request_membership.html",
+        {
+            "form": form,
+            "profile": profile,
         }
     )

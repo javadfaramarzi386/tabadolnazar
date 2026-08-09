@@ -30,9 +30,18 @@
 
         <div class="container">
 
-            <a class="navbar-brand" href="{% url 'home' %}">
-                <i class="bi bi-people-fill me-2"></i>
-                همراهان
+            <a class="navbar-brand d-flex align-items-center" href="{% url 'home' %}">
+
+                <img
+                    src="{% static 'images/logo.png' %}"
+                    alt="همراهان"
+                    class="site-logo"
+                >
+
+                <span>
+                    همراهان
+                </span>
+
             </a>
 
             <button
@@ -48,16 +57,90 @@
             </button>
 
             <div class="collapse navbar-collapse" id="navbarNav">
+                <!-- ساعت و تاریخ -->
+                <div class="site-datetime me-3">
+
+                    <div id="site-clock" class="site-clock">
+                        00:00:00 AM
+                    </div>
+
+                    <div id="site-date" class="site-date" dir="rtl">
+                        در حال بارگذاری...
+                    </div>
+
+                </div>
 
                 <!-- منوی اصلی سایت -->
                 <ul class="navbar-nav me-auto">
 
+                    <li class="nav-item dropdown">
+
+                        <a
+                            class="nav-link dropdown-toggle"
+                            href="{% url 'forum:post_list' %}"
+                            role="button"
+                            data-bs-toggle="dropdown"
+                            aria-expanded="false"
+                        >
+                            دسته‌بندی‌ها
+                        </a>
+
+                        <ul class="dropdown-menu">
+
+                            {% for cat in forum_categories %}
+
+                                <!-- دسته اصلی -->
+                                <li class="{% if cat.children.all %}dropdown-submenu{% endif %}">
+
+                                    <a
+                                        class="dropdown-item {% if cat.children.all %}dropdown-toggle{% endif %}"
+                                        href="{% url 'forum:category_posts' cat.slug %}"
+                                    >
+                                        {{ cat.name }}
+                                    </a>
+
+                                    {% if cat.children.all %}
+
+                                        <ul class="dropdown-menu">
+
+                                            {% for child in cat.children.all %}
+
+                                                <li>
+                                                    <a
+                                                        class="dropdown-item"
+                                                        href="{% url 'forum:category_posts' child.slug %}"
+                                                    >
+                                                        {{ child.name }}
+                                                    </a>
+                                                </li>
+
+                                            {% endfor %}
+
+                                        </ul>
+
+                                    {% endif %}
+
+                                </li>
+
+                            {% empty %}
+
+                                <li>
+                                    <span class="dropdown-item-text text-muted">
+                                        دسته‌ای ثبت نشده است
+                                    </span>
+                                </li>
+
+                            {% endfor %}
+
+                        </ul>
+
+                    </li>
                     <li class="nav-item">
                         <a
                             class="nav-link"
-                            href="{% url 'forum:post_list' %}"
+                            href="{% url 'forum:charter' %}"
                         >
-                            دسته‌بندی‌ها
+                            منشور انجمن
                         </a>
                     </li>
 
@@ -252,18 +335,60 @@
 
                     </p>
 
+                    <!-- ارتباط با مدیر -->
                     <p class="fs-5">
 
                         <i class="bi bi-envelope-fill text-primary"></i>
 
                         <a
-                            href="mailto:javadfaramarzi386@gmail.com"
-                            class="fw-bold"
+                            href="https://mail.google.com/mail/?view=cm&fs=1&to=javadfaramarzi386@gmail.com"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="fw-bold text-decoration-none"
                         >
-                            javadfaramarzi386@gmail.com
+                            ارسال ایمیل به مدیر
                         </a>
 
                     </p>
+
+                    <p class="fs-5 mt-3">
+
+                        <a
+                            href="https://wa.me/989223852787"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="fw-bold text-decoration-none text-success"
+                        >
+                            <i class="bi bi-whatsapp"></i>
+                            ارتباط با مدیر در واتساپ
+                        </a>
+
+                    </p>
+                    <hr class="my-4">
+
+                    <h5 class="fw-bold text-primary">
+                        <i class="bi bi-journal-text"></i>
+                        قوانین و اصول انجمن
+                    </h5>
+
+                    <p class="text-muted mt-3">
+                        آشنایی با ارزش‌ها، اصول اخلاقی و چارچوب فعالیت در انجمن
+                    </p>
+
+                    <a
+                        href="{% url 'forum:charter' %}"
+                        class="btn btn-outline-primary"
+                    >
+                        <i class="bi bi-book"></i>
+                        مطالعه منشور انجمن
+                    </a>
+                    <a
+                        href="{% url 'forum:privacy' %}"
+                        class="btn btn-outline-secondary ms-2"
+                    >
+                        <i class="bi bi-shield-lock"></i>
+                        حریم خصوصی
+                    </a>
 
                     <hr class="my-4">
 
@@ -314,6 +439,122 @@
     </footer>
     <!-- Bootstrap JavaScript (Offline) -->
     <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+    <script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const submenuToggles = document.querySelectorAll(
+        ".dropdown-submenu > .dropdown-toggle"
+    );
+
+    submenuToggles.forEach(function (toggle) {
+
+        toggle.addEventListener("click", function (event) {
+
+            if (window.innerWidth < 992) {
+
+                event.preventDefault();
+                event.stopPropagation();
+
+                const submenu = this.nextElementSibling;
+
+                if (submenu) {
+                    submenu.classList.toggle("show");
+                }
+
+            }
+
+        });
+
+    });
+
+});
+</script>
+    <!-- ساعت و تاریخ شمسی -->
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    function updateDateTime() {
+
+        const now = new Date();
+
+        // ==========================
+        // ساعت انگلیسی
+        // ==========================
+
+        let hours = now.getHours();
+        const minutes = String(now.getMinutes()).padStart(2, "0");
+        const seconds = String(now.getSeconds()).padStart(2, "0");
+
+        const ampm = hours >= 12 ? "PM" : "AM";
+
+        hours = hours % 12;
+
+        if (hours === 0) {
+            hours = 12;
+        }
+
+        hours = String(hours).padStart(2, "0");
+
+        const clockText =
+            `${hours}:${minutes}:${seconds} ${ampm}`;
+
+        document.getElementById("site-clock").textContent = clockText;
+
+
+        // ==========================
+        // تاریخ شمسی فارسی
+        // ==========================
+
+        const parts = new Intl.DateTimeFormat(
+            "fa-IR-u-ca-persian",
+            {
+                weekday: "long",
+                year: "numeric",
+                month: "long",
+                day: "numeric"
+            }
+        ).formatToParts(now);
+
+        let weekday = "";
+        let day = "";
+        let month = "";
+        let year = "";
+
+        parts.forEach(part => {
+
+            if (part.type === "weekday") {
+                weekday = part.value;
+            }
+
+            if (part.type === "day") {
+                day = part.value;
+            }
+
+            if (part.type === "month") {
+                month = part.value;
+            }
+
+            if (part.type === "year") {
+                year = part.value;
+            }
+
+        });
+
+        const dateText =
+            `${weekday} ${day} ${month} ${year}`;
+
+        document.getElementById("site-date").textContent = dateText;
+    }
+
+
+    // اجرای اولیه
+    updateDateTime();
+
+    // بروزرسانی ساعت هر ثانیه
+    setInterval(updateDateTime, 1000);
+
+});
+</script>
 
     <!-- JavaScript اختصاصی هر صفحه در صورت نیاز -->
     {% block extra_scripts %}{% endblock %}

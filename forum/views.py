@@ -2,7 +2,7 @@
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.db.models import Count, Q
+from django.db.models import Count, Q, Prefetch
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.http import require_POST
 
@@ -10,6 +10,16 @@ from .forms import CommentForm, PostForm
 from .models import Category, Post
 from accounts.decorators import verified_member_required
 
+
+def charter(request):
+    return render(request, "pages/charter.html")
+
+def privacy(request):
+
+    return render(
+        request,
+        "pages/privacy.html"
+    )
 
 def post_list(request):
     search = request.GET.get("q", "").strip()
@@ -29,8 +39,25 @@ def post_list(request):
         )
 
     categories = (
-        Category.objects.filter(is_visible=True)
-        .annotate(post_count=Count("posts"))
+        Category.objects.filter(
+            is_visible=True,
+            parent__isnull=True,
+        )
+        .annotate(post_count=Count("posts", filter=Q(posts__is_approved=True)))
+        .prefetch_related(
+            Prefetch(
+                "children",
+                queryset=Category.objects.filter(
+                    is_visible=True,
+                    is_active=True,
+                ).annotate(
+                    post_count=Count(
+                        "posts",
+                        filter=Q(posts__is_approved=True)
+                    )
+                ).order_by("display_order", "name"),
+            )
+        )
         .order_by("display_order", "name")
     )
 
@@ -65,8 +92,25 @@ def category_posts(request, slug):
         )
 
     categories = (
-        Category.objects.filter(is_visible=True)
-        .annotate(post_count=Count("posts"))
+        Category.objects.filter(
+            is_visible=True,
+            parent__isnull=True,
+        )
+        .annotate(post_count=Count("posts", filter=Q(posts__is_approved=True)))
+        .prefetch_related(
+            Prefetch(
+                "children",
+                queryset=Category.objects.filter(
+                    is_visible=True,
+                    is_active=True,
+                ).annotate(
+                    post_count=Count(
+                        "posts",
+                        filter=Q(posts__is_approved=True)
+                    )
+                ).order_by("display_order", "name"),
+            )
+        )
         .order_by("display_order", "name")
     )
 
@@ -170,6 +214,10 @@ def create_post(request):
         {
             "form": form,
             "title": "ایجاد موضوع جدید",
+            "categories": Category.objects.filter(
+                is_active=True,
+                is_visible=True
+            ),
         },
     )
 

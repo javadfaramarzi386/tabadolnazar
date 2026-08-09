@@ -7,22 +7,27 @@ from .models import Category, Comment, Post
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
+
     list_display = (
         "name",
         "parent",
         "display_order",
         "is_active",
+        "is_visible",
         "slug",
     )
 
     list_filter = (
         "is_active",
+        "is_visible",
         "parent",
     )
 
     search_fields = (
         "name",
         "description",
+        "short_description",
+        "usage_guide",
     )
 
     prepopulated_fields = {
@@ -34,9 +39,50 @@ class CategoryAdmin(admin.ModelAdmin):
         "name",
     )
 
+    fieldsets = (
+        (
+            "اطلاعات اصلی دسته",
+            {
+                "fields": (
+                    "name",
+                    "slug",
+                    "parent",
+                    "description",
+                )
+            },
+        ),
+
+        (
+            "راهنمای انتخاب دسته توسط کاربران",
+            {
+                "fields": (
+                    "short_description",
+                    "usage_guide",
+                    "writing_help",
+                    "important_notice",
+                )
+            },
+        ),
+
+        (
+            "تنظیمات نمایش",
+            {
+                "fields": (
+                    "display_order",
+                    "is_active",
+                    "is_visible",
+                    "icon",
+                    "color",
+                    "image",
+                )
+            },
+        ),
+    )
+
 
 @admin.register(Post)
 class PostAdmin(admin.ModelAdmin):
+
     list_display = (
         "title",
         "author",
@@ -73,6 +119,7 @@ class PostAdmin(admin.ModelAdmin):
 
 @admin.register(Comment)
 class CommentAdmin(admin.ModelAdmin):
+
     list_display = (
         "author",
         "post",

@@ -9,6 +9,8 @@ app_name = "forum"
 
 
 urlpatterns = [
+    path("charter/", views.charter, name="charter"),
+    path("privacy/", views.privacy, name="privacy"),
     path("", views.post_list, name="post_list"),
 
     path(

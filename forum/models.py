@@ -24,6 +24,27 @@ class Category(models.Model):
         verbose_name="توضیحات",
     )
 
+    short_description = models.CharField(
+        max_length=300,
+        blank=True,
+        verbose_name="توضیح کوتاه برای انتخاب دسته",
+    )
+
+    usage_guide = models.TextField(
+        blank=True,
+        verbose_name="راهنمای استفاده از این دسته",
+    )
+
+    writing_help = models.TextField(
+        blank=True,
+        verbose_name="راهنمای نوشتن مطلب",
+    )
+
+    important_notice = models.TextField(
+        blank=True,
+        verbose_name="نکات مهم",
+    )
+
     parent = models.ForeignKey(
         "self",
         on_delete=models.SET_NULL,

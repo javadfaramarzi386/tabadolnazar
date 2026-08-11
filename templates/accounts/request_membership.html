@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+
+{% block title %}
+درخواست تأیید عضویت
+{% endblock %}
+
+
+{% block content %}
+
+
+<div class="row justify-content-center mt-5">
+
+    <div class="col-lg-7 col-md-9">
+
+
+        <div class="card shadow">
+
+
+            <div class="card-header bg-primary text-white text-center">
+
+                <h4 class="mb-0">
+                    درخواست تأیید عضویت خانواده
+                </h4>
+
+            </div>
+
+
+
+            <div class="card-body p-4">
+
+
+                <p class="text-muted">
+
+                    برای ایجاد محیطی امن، عضویت خانواده‌ها پس از بررسی
+                    توسط مدیریت انجمن تأیید می‌شود.
+
+                    لطفاً اطلاعات زیر را با دقت تکمیل کنید.
+
+                </p>
+
+
+                <hr>
+
+
+                <form method="post">
+
+                    {% csrf_token %}
+
+
+                    {{ form.as_p }}
+
+
+                    <button
+                        type="submit"
+                        class="btn btn-primary w-100 mt-3"
+                    >
+                        ارسال درخواست بررسی
+                    </button>
+
+
+                </form>
+
+
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+</div>
+
+
+{% endblock %}

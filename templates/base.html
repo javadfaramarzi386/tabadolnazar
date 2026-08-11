@@ -11,10 +11,10 @@
     <title>{% block title %}تبادل نظر{% endblock %}</title>
 
     <!-- Bootstrap CSS (Offline) -->
-    <link rel="stylesheet" href='{% static 'css/bootstrap.min.css' %}'>
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
 
     <!-- Bootstrap Icons (Offline) -->
-    <link rel="stylesheet" href='{% static 'css/bootstrap-icons.css' %}'>
+    <link rel="stylesheet" href="{% static 'css/bootstrap-icons.css' %}">
 
     <!-- CSS اختصاصی پروژه -->
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
@@ -30,9 +30,18 @@
 
         <div class="container">
 
-            <a class="navbar-brand" href="{% url 'home' %}">
-                <i class="bi bi-people-fill me-2"></i>
-                همراهان
+            <a class="navbar-brand d-flex align-items-center" href="{% url 'home' %}">
+
+                <img
+                    src="{% static 'images/logo.png' %}"
+                    alt="همراهان"
+                    class="site-logo"
+                >
+
+                <span>
+                    همراهان
+                </span>
+
             </a>
 
             <button
@@ -48,16 +57,90 @@
             </button>
 
             <div class="collapse navbar-collapse" id="navbarNav">
+                <!-- ساعت و تاریخ -->
+                <div class="site-datetime me-3">
+
+                    <div id="site-clock" class="site-clock">
+                        00:00:00 AM
+                    </div>
+
+                    <div id="site-date" class="site-date" dir="rtl">
+                        در حال بارگذاری...
+                    </div>
+
+                </div>
 
                 <!-- منوی اصلی سایت -->
                 <ul class="navbar-nav me-auto">
 
+                    <li class="nav-item dropdown">
+
+                        <a
+                            class="nav-link dropdown-toggle"
+                            href="{% url 'forum:post_list' %}"
+                            role="button"
+                            data-bs-toggle="dropdown"
+                            aria-expanded="false"
+                        >
+                            دسته‌بندی‌ها
+                        </a>
+
+                        <ul class="dropdown-menu">
+
+                            {% for cat in forum_categories %}
+
+                                <!-- دسته اصلی -->
+                                <li class="{% if cat.children.all %}dropdown-submenu{% endif %}">
+
+                                    <a
+                                        class="dropdown-item {% if cat.children.all %}dropdown-toggle{% endif %}"
+                                        href="{% url 'forum:category_posts' cat.slug %}"
+                                    >
+                                        {{ cat.name }}
+                                    </a>
+
+                                    {% if cat.children.all %}
+
+                                        <ul class="dropdown-menu">
+
+                                            {% for child in cat.children.all %}
+
+                                                <li>
+                                                    <a
+                                                        class="dropdown-item"
+                                                        href="{% url 'forum:category_posts' child.slug %}"
+                                                    >
+                                                        {{ child.name }}
+                                                    </a>
+                                                </li>
+
+                                            {% endfor %}
+
+                                        </ul>
+
+                                    {% endif %}
+
+                                </li>
+
+                            {% empty %}
+
+                                <li>
+                                    <span class="dropdown-item-text text-muted">
+                                        دسته‌ای ثبت نشده است
+                                    </span>
+                                </li>
+
+                            {% endfor %}
+
+                        </ul>
+
+                    </li>
                     <li class="nav-item">
                         <a
                             class="nav-link"
-                            href="{% url 'forum:post_list' %}"
+                            href="{% url 'forum:charter' %}"
                         >
-                            دسته‌بندی‌ها
+                            منشور انجمن
                         </a>
                     </li>
 
@@ -214,106 +297,254 @@
 
     </main>
     <!-- Footer -->
-    <footer class="py-5 mt-5">
 
-        <div class="container">
+    <div class="container">
 
-            <div class="row justify-content-center">
+        <div class="row justify-content-center">
 
-                <div class="col-lg-9 text-center">
+            <div class="col-lg-9 text-center">
 
-                    <h4 class="fw-bold text-primary mb-3">
+                <h4 class="fw-bold text-primary mb-3">
+                    <i class="bi bi-heart-fill"></i>
+                    همراهان
+                </h4>
 
-                        <i class="bi bi-heart-fill"></i>
+                <p class="text-muted">
+                    انجمن خانواده‌های کودکان با نیازهای ویژه،
+                    محیطی برای تبادل تجربه، همدلی، آموزش و حمایت
+                    از خانواده‌هایی است که مسیر زندگی متفاوت اما
+                    ارزشمندی را طی می‌کنند.
+                </p>
 
-                        همراهان
+                <hr class="my-4">
 
-                    </h4>
+                <h5 class="fw-bold">
+                    ارتباط با مدیر سایت
+                </h5>
 
-                    <p class="text-muted">
+                <p class="text-muted mt-3">
+                    پیشنهادها، انتقادها، گزارش خطا یا ایده‌های خود
+                    را برای بهبود سایت از طریق ایمیل یا تلگرام زیر
+                    ارسال کنید.
+                </p>
 
-                        انجمن خانواده‌های کودکان با نیازهای ویژه،
-                        محیطی برای تبادل تجربه، همدلی، آموزش و حمایت
-                        از خانواده‌هایی است که مسیر زندگی متفاوت اما
-                        ارزشمندی را طی می‌کنند.
+                <!-- ارتباط با مدیر -->
+                <p class="fs-5">
 
-                    </p>
+                    <i class="bi bi-envelope-fill text-primary"></i>
 
-                    <hr class="my-4">
+                    <a
+                        href="https://mail.google.com/mail/?view=cm&fs=1&to=javadfaramarzi386@gmail.com"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="fw-bold text-decoration-none"
+                    >
+                        ارسال ایمیل به مدیر
+                    </a>
 
-                    <h5 class="fw-bold">
-                        ارتباط با مدیر سایت
-                    </h5>
+                </p>
 
-                    <p class="text-muted mt-3">
+                <p class="fs-5 mt-3">
 
-                        پیشنهادها، انتقادها، گزارش خطا یا ایده‌های خود
-                        را برای بهبود سایت از طریق ایمیل زیر ارسال کنید.
+                    <a
+                        href="https://t.me/Hamrah_Special"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="fw-bold text-decoration-none text-primary"
+                    >
+                        <i class="bi bi-telegram"></i>
+                        ارتباط با مدیر در تلگرام
+                        <span class="text-muted">@Hamrah_Special</span>
+                    </a>
 
-                    </p>
+                </p>
 
-                    <p class="fs-5">
+                <hr class="my-4">
 
-                        <i class="bi bi-envelope-fill text-primary"></i>
+                <h5 class="fw-bold text-primary">
+                    <i class="bi bi-journal-text"></i>
+                    قوانین و اصول انجمن
+                </h5>
 
-                        <a
-                            href="mailto:javadfaramarzi386@gmail.com"
-                            class="fw-bold"
-                        >
-                            javadfaramarzi386@gmail.com
-                        </a>
+                <p class="text-muted mt-3">
+                    آشنایی با ارزش‌ها، اصول اخلاقی و چارچوب فعالیت در انجمن
+                </p>
 
-                    </p>
+                <a
+                    href="{% url 'forum:charter' %}"
+                    class="btn btn-outline-primary"
+                >
+                    <i class="bi bi-book"></i>
+                    مطالعه منشور انجمن
+                </a>
 
-                    <hr class="my-4">
+                <a
+                    href="{% url 'forum:privacy' %}"
+                    class="btn btn-outline-secondary ms-2"
+                >
+                    <i class="bi bi-shield-lock"></i>
+                    حریم خصوصی
+                </a>
 
-                    <h5 class="text-primary fw-bold">
-                        🌹 تقدیم
-                    </h5>
+                <hr class="my-4">
 
-                    <p class="lead">
+                <h5 class="text-primary fw-bold">
+                    🌹 تقدیم
+                </h5>
 
-                        این وب‌سایت با عشق و احترام
-                        <strong>به فرهاد فرامرزی</strong>
-                        تقدیم می‌شود.
+                <p class="lead">
+                    این وب‌سایت با عشق و احترام
+                    <strong>به فرهاد فرامرزی</strong>
+                    تقدیم می‌شود.
+                </p>
 
-                    </p>
+                <p class="text-muted">
+                    فرهاد عزیز...
 
-                    <p class="text-muted">
+                    حضور تو الهام‌بخش شکل‌گیری این مجموعه است.
 
-                        فرهاد عزیز...
+                    آرزو دارم این سایت بتواند اندکی از مسیر دشوار
+                    خانواده‌های کودکان با نیازهای ویژه را هموارتر کند
+                    و امید، آگاهی و همدلی بیشتری را میان آنان گسترش دهد.
+                </p>
 
-                        حضور تو الهام‌بخش شکل‌گیری این مجموعه است.
+                <hr class="my-4">
 
-                        آرزو دارم این سایت بتواند اندکی از مسیر دشوار
-                        خانواده‌های کودکان با نیازهای ویژه را هموارتر کند
-                        و امید، آگاهی و همدلی بیشتری را میان آنان گسترش دهد.
+                <p class="mb-1 fw-bold">
+                    همراهان؛ کنار هم، قوی‌تر هستیم.
+                </p>
 
-                    </p>
-
-                    <hr class="my-4">
-
-                    <p class="mb-1 fw-bold">
-
-                        همراهان؛ کنار هم، قوی‌تر هستیم.
-
-                    </p>
-
-                    <small class="text-muted">
-
-                        © ۱۴۰۵ تمامی حقوق این وب‌سایت محفوظ است.
-
-                    </small>
-
-                </div>
+                <small class="text-muted">
+                    © ۱۴۰۵ تمامی حقوق این وب‌سایت محفوظ است.
+                </small>
 
             </div>
 
         </div>
 
-    </footer>
+    </div>
+
+</footer>
+
+
     <!-- Bootstrap JavaScript (Offline) -->
     <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+    <script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const submenuToggles = document.querySelectorAll(
+        ".dropdown-submenu > .dropdown-toggle"
+    );
+
+    submenuToggles.forEach(function (toggle) {
+
+        toggle.addEventListener("click", function (event) {
+
+            if (window.innerWidth < 992) {
+
+                event.preventDefault();
+                event.stopPropagation();
+
+                const submenu = this.nextElementSibling;
+
+                if (submenu) {
+                    submenu.classList.toggle("show");
+                }
+
+            }
+
+        });
+
+    });
+
+});
+</script>
+    <!-- ساعت و تاریخ شمسی -->
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    function updateDateTime() {
+
+        const now = new Date();
+
+        // ==========================
+        // ساعت انگلیسی
+        // ==========================
+
+        let hours = now.getHours();
+        const minutes = String(now.getMinutes()).padStart(2, "0");
+        const seconds = String(now.getSeconds()).padStart(2, "0");
+
+        const ampm = hours >= 12 ? "PM" : "AM";
+
+        hours = hours % 12;
+
+        if (hours === 0) {
+            hours = 12;
+        }
+
+        hours = String(hours).padStart(2, "0");
+
+        const clockText =
+            `${hours}:${minutes}:${seconds} ${ampm}`;
+
+        document.getElementById("site-clock").textContent = clockText;
+
+
+        // ==========================
+        // تاریخ شمسی فارسی
+        // ==========================
+
+        const parts = new Intl.DateTimeFormat(
+            "fa-IR-u-ca-persian",
+            {
+                weekday: "long",
+                year: "numeric",
+                month: "long",
+                day: "numeric"
+            }
+        ).formatToParts(now);
+
+        let weekday = "";
+        let day = "";
+        let month = "";
+        let year = "";
+
+        parts.forEach(part => {
+
+            if (part.type === "weekday") {
+                weekday = part.value;
+            }
+
+            if (part.type === "day") {
+                day = part.value;
+            }
+
+            if (part.type === "month") {
+                month = part.value;
+            }
+
+            if (part.type === "year") {
+                year = part.value;
+            }
+
+        });
+
+        const dateText =
+            `${weekday} ${day} ${month} ${year}`;
+
+        document.getElementById("site-date").textContent = dateText;
+    }
+
+
+    // اجرای اولیه
+    updateDateTime();
+
+    // بروزرسانی ساعت هر ثانیه
+    setInterval(updateDateTime, 1000);
+
+});
+</script>
 
     <!-- JavaScript اختصاصی هر صفحه در صورت نیاز -->
     {% block extra_scripts %}{% endblock %}

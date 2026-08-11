@@ -8,27 +8,128 @@
 
 <div class="row justify-content-center mt-5">
     <div class="col-lg-8">
+
         <div class="card shadow">
+
             <div class="card-header bg-primary text-white">
                 <h5>{{ title }}</h5>
             </div>
+
             <div class="card-body">
+
                 <form method="post">
+
                     {% csrf_token %}
-                    {{ form.as_p }}
+
+                    <div class="mb-3">
+                        {{ form.title.label_tag }}
+                        {{ form.title }}
+                        {{ form.title.errors }}
+                    </div>
+
+
+                    <div class="mb-3">
+                        {{ form.category.label_tag }}
+                        {{ form.category }}
+                        {{ form.category.errors }}
+                    </div>
+
+
+                    <!-- راهنمای دسته -->
+                    <div id="category-guide" class="alert alert-info d-none">
+
+                        <h6>راهنمای این دسته</h6>
+
+                        <p id="category-short"></p>
+
+                        <strong>این دسته :</strong>
+                        <p id="category-usage"></p>
+
+                        <strong>برای نوشتن بهتر:</strong>
+                        <p id="category-writing"></p>
+
+                        <strong>نکته مهم:</strong>
+                        <p id="category-notice"></p>
+
+                    </div>
+
+
+                    <div class="mb-3">
+                        {{ form.content.label_tag }}
+                        {{ form.content }}
+                        {{ form.content.errors }}
+                    </div>
+
 
                     <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
-                        <a href="{% url 'forum:post_list' %}" class="btn btn-secondary">
+
+                        <a href="{% url 'forum:post_list' %}"
+                           class="btn btn-secondary">
                             انصراف
                         </a>
+
                         <button type="submit" class="btn btn-primary">
                             انتشار موضوع
                         </button>
+
                     </div>
+
                 </form>
+
             </div>
+
         </div>
+
     </div>
 </div>
+
+
+<script>
+const categoryData = {
+
+{% for category in categories %}
+
+"{{ category.id }}": {
+    short: `{{ category.short_description|escapejs }}`,
+    usage: `{{ category.usage_guide|escapejs }}`,
+    writing: `{{ category.writing_help|escapejs }}`,
+    notice: `{{ category.important_notice|escapejs }}`
+},
+
+{% endfor %}
+
+};
+
+
+const categorySelect = document.getElementById("id_category");
+
+const guideBox = document.getElementById("category-guide");
+
+
+categorySelect.addEventListener("change", function(){
+
+    const data = categoryData[this.value];
+
+
+    if(data){
+
+        guideBox.classList.remove("d-none");
+
+        document.getElementById("category-short").innerHTML = data.short;
+        document.getElementById("category-usage").innerHTML = data.usage;
+        document.getElementById("category-writing").innerHTML = data.writing;
+        document.getElementById("category-notice").innerHTML = data.notice;
+
+    }
+    else{
+
+        guideBox.classList.add("d-none");
+
+    }
+
+});
+
+</script>
+
 
 {% endblock %}

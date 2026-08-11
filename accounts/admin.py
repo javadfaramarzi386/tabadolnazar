@@ -1,5 +1,5 @@
-# accounts/admin.py
 from django.contrib import admin
+from django.utils.html import format_html
 
 from .models import Profile, Report
 
@@ -9,6 +9,7 @@ class ProfileAdmin(admin.ModelAdmin):
 
     list_display = (
         "user",
+        "avatar_preview",
         "nickname",
         "membership_status",
         "verification_requested",
@@ -43,33 +44,49 @@ class ProfileAdmin(admin.ModelAdmin):
         "pending_members",
     ]
 
+    @admin.display(description="تصویر پروفایل")
+    def avatar_preview(self, obj):
+        if not obj.avatar:
+            return "بدون تصویر"
+
+        try:
+            if not obj.avatar.storage.exists(obj.avatar.name):
+                return "فایل تصویر پیدا نشد"
+
+            return format_html(
+                '<img src="{}" width="45" height="45" '
+                'style="object-fit: cover; border-radius: 6px;" />',
+                obj.avatar.url,
+            )
+
+        except (FileNotFoundError, OSError):
+            return "فایل تصویر پیدا نشد"
 
     @admin.action(description="تأیید اعضای انتخاب شده")
     def approve_members(self, request, queryset):
-
         queryset.update(
-            membership_status="verified"
+            membership_status="verified",
+            verification_requested=False,
         )
-
 
     @admin.action(description="مسدود کردن اعضای انتخاب شده")
     def block_members(self, request, queryset):
-
         queryset.update(
-            membership_status="blocked"
+            membership_status="blocked",
+            verification_requested=False,
         )
-
 
     @admin.action(description="بازگرداندن به انتظار بررسی")
     def pending_members(self, request, queryset):
-
         queryset.update(
-            membership_status="pending"
+            membership_status="pending",
+            verification_requested=True,
         )
 
 
 @admin.register(Report)
 class ReportAdmin(admin.ModelAdmin):
+
     list_display = (
         "reporter",
         "reported_user",
@@ -82,6 +99,8 @@ class ReportAdmin(admin.ModelAdmin):
         "reason",
     )
 
-    list_filter = ("created_at",)
+    list_filter = (
+        "created_at",
+    )
 
     ordering = ("-created_at",)

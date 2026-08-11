@@ -1,0 +1,4 @@
+python -m venv .venv
+.venv\Scripts\activate.bat
+python -m pip install --no-index --find-links=packages -r requirements.txt
+py .\manage.py runserver

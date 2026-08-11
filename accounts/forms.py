@@ -75,6 +75,14 @@ class UserRegistrationForm(forms.ModelForm):
         label="تکرار رمز عبور",
     )
 
+    accept_charter = forms.BooleanField(
+        required=True,
+        label="منشور انجمن را مطالعه کرده‌ام و با آن موافقم.",
+        error_messages={
+            "required": "برای ثبت‌نام باید منشور انجمن را بپذیرید."
+        },
+    )
+
 
     email = forms.EmailField(
         required=True,
@@ -291,6 +299,59 @@ class UserRegistrationForm(forms.ModelForm):
 
 
         return user
+
+class MembershipVerificationForm(forms.ModelForm):
+
+    class Meta:
+
+        model = Profile
+
+        fields = [
+            "relationship_to_child",
+            "child_age",
+            "condition_type",
+            "location",
+            "verification_note",
+        ]
+
+        widgets = {
+
+            "relationship_to_child": forms.TextInput(
+                attrs={
+                    "class": "form-control",
+                    "placeholder": "مثلاً مادر، پدر، سرپرست",
+                }
+            ),
+
+            "child_age": forms.NumberInput(
+                attrs={
+                    "class": "form-control",
+                    "placeholder": "سن کودک",
+                }
+            ),
+
+            "condition_type": forms.TextInput(
+                attrs={
+                    "class": "form-control",
+                    "placeholder": "نوع شرایط یا نیاز ویژه",
+                }
+            ),
+
+            "location": forms.TextInput(
+                attrs={
+                    "class": "form-control",
+                    "placeholder": "شهر محل سکونت",
+                }
+            ),
+
+            "verification_note": forms.Textarea(
+                attrs={
+                    "class": "form-control",
+                    "rows": 4,
+                    "placeholder": "توضیحی برای مدیر انجمن",
+                }
+            ),
+        }
 class ProfileForm(forms.ModelForm):
 
     avatar = forms.ImageField(

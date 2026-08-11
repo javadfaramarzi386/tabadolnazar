@@ -1,3 +1,4 @@
+/*forum_project/static/css/style.css*/
 /* ===========================
    Modern Forum Theme
 =========================== */
@@ -160,5 +161,168 @@ to{
 opacity:1;
 transform:translateY(0);
 }
+
+}
+.home-page-bg {
+
+    background-image:
+    linear-gradient(
+        rgba(255,255,255,0.85),
+        rgba(255,255,255,0.85)
+    ),
+    url("../images/home-bg.jpg");
+
+
+    background-size:cover;
+
+    background-position:center;
+
+    background-attachment:fixed;
+
+    border-radius:25px;
+
+    padding:40px 20px;
+
+}
+.site-logo {
+
+    width: 65px;
+    height: 45px;
+
+    object-fit: cover;
+
+    border-radius: 12px;
+
+    background: white;
+
+    padding: 3px;
+
+    margin-left: 12px;
+
+    box-shadow: 0 3px 12px rgba(0,0,0,.18);
+
+}
+
+/* =========================================
+   منوی آبشاری دسته‌بندی‌ها - RTL
+   ========================================= */
+
+.navbar .dropdown-submenu {
+    position: relative;
+}
+
+/* زیرمنوی دسکتاپ */
+@media (min-width: 992px) {
+
+    .navbar .dropdown-submenu > .dropdown-menu {
+        position: absolute;
+        top: -1px;
+        right: 100%;
+        left: auto;
+        margin-right: 0;
+        margin-left: 0;
+        display: none;
+    }
+
+    .navbar .dropdown-submenu:hover > .dropdown-menu {
+        display: block;
+    }
+
+    .navbar .dropdown-submenu > .dropdown-toggle::after {
+        float: left;
+        margin-top: 7px;
+        transform: rotate(90deg);
+    }
+}
+
+
+/* =========================================
+   نسخه موبایل
+   ========================================= */
+
+@media (max-width: 991.98px) {
+
+    .navbar .dropdown-submenu > .dropdown-menu {
+        position: static;
+        width: 100%;
+        margin: 0;
+        padding-right: 15px;
+        border: 0;
+        box-shadow: none;
+        background-color: rgba(0, 0, 0, 0.05);
+    }
+
+    .navbar .dropdown-submenu > .dropdown-menu.show {
+        display: block;
+    }
+
+    .navbar .dropdown-submenu > .dropdown-toggle::after {
+        float: left;
+        margin-top: 7px;
+    }
+
+    .navbar .dropdown-submenu > .dropdown-item {
+        white-space: normal;
+    }
+
+}
+/* =========================================
+   ساعت و تاریخ سایت
+   ========================================= */
+
+.site-datetime {
+    text-align: center;
+    direction: ltr;
+    white-space: nowrap;
+    padding: 4px 10px;
+    line-height: 1.3;
+}
+
+.site-clock {
+    font-size: 0.95rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+    color: #ffffff;
+}
+
+.site-date {
+    direction: rtl;
+    unicode-bidi: isolate;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #ffffff;
+    margin-top: 4px;
+    text-align: center;
+    white-space: nowrap;
+}
+
+
+/* =========================================
+   نسخه موبایل
+   ========================================= */
+
+@media (max-width: 991.98px) {
+
+    .site-datetime {
+        width: 100%;
+        margin: 10px 0;
+        padding: 8px 0;
+        border-top: 1px solid rgba(255, 255, 255, 0.15);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+    }
+
+    .site-clock {
+        font-size: 1rem;
+    }
+
+    .site-date {
+    direction: rtl;
+    unicode-bidi: isolate;
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-top: 4px;
+    text-align: center;
+    white-space: nowrap;
+    }
 
 }

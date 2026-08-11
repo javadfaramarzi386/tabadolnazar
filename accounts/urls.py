@@ -9,6 +9,11 @@ app_name = "accounts"
 
 urlpatterns = [
     path(
+        "request-membership/",
+        views.request_membership_verification,
+        name="request_membership"
+    ),
+    path(
         "register/",
         views.register,
         name="register",
